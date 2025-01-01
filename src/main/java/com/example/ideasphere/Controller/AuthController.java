@@ -1,4 +1,4 @@
 package com.example.ideasphere.Controller;
 
-public class AuthController {
+public class AuthController { // Naelah
 }
