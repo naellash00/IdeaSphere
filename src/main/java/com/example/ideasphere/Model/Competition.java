@@ -61,7 +61,7 @@ public class Competition {
     private Integer maxParticipants;
 
     @NotEmpty(message = "Error: status is empty")
-    @Pattern(regexp = "Ongoing|Completed|Winner Selection in Progress|Under Voting Process" , message = "Error: status method only Ongoing|Completed|Winner Selection in Progress|Under Voting Process")
+    @Pattern(regexp = "Ongoing|Completed|Winner Selection in Progress|Under Voting Process|Waiting payment|canceled" , message = "Error: status method only Ongoing|Completed|Winner Selection in Progress|Under Voting Process|Waiting payment|canceled")
     @Column(nullable = false )
     private String status;
 

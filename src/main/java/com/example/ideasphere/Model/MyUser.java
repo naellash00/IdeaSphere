@@ -27,25 +27,18 @@ public class MyUser implements UserDetails { // Naelah
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotEmpty(message = "Username Cannot Be Empty")
-    @Size(min = 5, max =  15, message = "Username Must Be Between 5 - 15 Letters")
+
     @Column(columnDefinition = "varchar(15) not null unique")
     private String username;
 
-    @NotEmpty(message = "Password Cannot Be Empty")
-    @Size(min = 5, message = "Password Cannot Be Less Than 5 Letters")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=]).{5,}$", message = "Password must contain at least one uppercase, one lowercase, one digit, one special character, and be at least 5 characters long")
-    @Column(columnDefinition = "varchar(20) not null")
+    @Column(columnDefinition = "varchar(200) not null")
     private String password;
 
 
-    @Size(min = 3, max = 15, message = "Length of name must be between 3 - 15 characters.")
-    @NotEmpty(message = "Name Cannot Be Empty")
     @Column(columnDefinition = "varchar(15) not null")
     private String name;
 
-    @NotEmpty(message = "Email Cannot Be Empty")
-    @Email(message = "Enter A Valid Email")
+
     @Column(columnDefinition = "varchar(30) not null unique")
     private String email;
 
