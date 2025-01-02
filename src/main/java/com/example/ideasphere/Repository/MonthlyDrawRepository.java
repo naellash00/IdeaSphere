@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MonthlyDrawRepository extends JpaRepository<MonthlyDraw, Integer> {
+    MonthlyDraw findMonthlyDrawById(Integer id);
 }

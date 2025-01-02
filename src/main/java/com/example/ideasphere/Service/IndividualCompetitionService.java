@@ -24,7 +24,12 @@ public class IndividualCompetitionService {
     @Autowired
     private final AuthRepository authRepository;
 
-    public  List<IndividualCompetition> competitions(){
+
+    public  List<IndividualCompetition> findAllIndividualCompetitions(Integer userId){
+            MyUser user = authRepository.findMyUserById( userId);
+            if (userId == null){
+                throw new ApiException("user not found");
+            }
           return  individualCompetitionRepository.findAll();
       }
 
@@ -36,12 +41,10 @@ public class IndividualCompetitionService {
 
     public void updateIndividualCompetition(Integer userId, IndividualCompetition individualCompetition) {
 
-        // Authorization check (same as in deleteIndividualCompetition)
-        MyUser user = authRepository.findMyUserById(userId);
+         MyUser user = authRepository.findMyUserById(userId);
         if (user == null) {
             throw new ApiException("User not found");
         }
-
 
         IndividualCompetition existingCompetition = individualCompetitionRepository.findIndividualCompetitionById(individualCompetition.getId());
         if (existingCompetition == null) {
