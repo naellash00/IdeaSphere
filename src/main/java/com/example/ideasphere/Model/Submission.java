@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -37,13 +38,15 @@ public class Submission {
     @Column(columnDefinition = "text not null")
     private String description;
 
+    @Column(columnDefinition = "timestamp")
     private LocalDateTime submittedAt;
-    //    Participant(Participant     many to one)
+
     @ManyToOne
     @JsonIgnore
     private Participant participant;
-    //    Competition  (Competition   many to one)
-    //    List<> Vote  (one to many Vote )
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "submission")
+    private Set<Vote> votes;
 
     @ManyToOne
     @JsonIgnore

@@ -34,6 +34,11 @@ public class Participant { // Naelah
     private MyUser user;
 
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "participant")
+    private Set<Submission> submissions;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "voter")
+    private Set<Vote> votes;
 
     @OneToMany(cascade = CascadeType.ALL ,mappedBy = "participantWinner")
     private Set<Competition> competitionsWinner;
