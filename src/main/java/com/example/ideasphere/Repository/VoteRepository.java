@@ -1,12 +1,10 @@
 package com.example.ideasphere.Repository;
 
-import com.example.ideasphere.Model.Category;
+import com.example.ideasphere.Model.Vote;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category,Integer> {
-
-
-    Category findCategoryById(Integer id);
+public interface VoteRepository extends JpaRepository<Vote, Integer> {
+    Vote findVoteById(Integer id);
 }
