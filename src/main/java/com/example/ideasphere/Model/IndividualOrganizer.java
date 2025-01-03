@@ -31,16 +31,19 @@ public class IndividualOrganizer {
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 
-     @OneToOne
-     @MapsId
-     @JsonIgnore
-     private MyUser myUser;
+//    @NotEmpty(message = "Error: contactPhone is empty")
+//    @Pattern(regexp = "Not Active|Active" , message = "Error: status must is Not Active or Active")
+//    @Column(nullable = false )
+//    private String status;
+
+    @OneToOne
+    @MapsId
+    @JsonIgnore
+    private MyUser myUser;
 
 
     @OneToMany(mappedBy = "individualOrganizer", cascade = CascadeType.ALL)
     private Set<IndividualCompetition> individualCompetitions;
-
-
 
 
 

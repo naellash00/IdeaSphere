@@ -30,7 +30,6 @@ public class MonthlyDraw {
     @Column(nullable = false)
     private String name;
 
-
     @NotEmpty(message = "description is mandatory")
     @Column(nullable = false,  length = 500)
     private String description;
@@ -48,13 +47,12 @@ public class MonthlyDraw {
     @Column(nullable = false)
     private Integer requiredPoints;
 
-    @Column(name = "CreatedAt", updatable = false)
-    private LocalDate createdAt;
+    @Column(updatable = false)
+    private LocalDate createdAt = LocalDate.now();
 
-    @NotEmpty(message = "requiredPoints is mandatory")
+    @NotNull(message = "requiredPoints is mandatory")
     @Column(nullable = false)
     private LocalDate endDate;
-
 
     @Column(nullable = true)
     private Boolean isCompleted = false;
@@ -65,7 +63,5 @@ public class MonthlyDraw {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "monthlyDraw")
     private Set<MonthlyDrawParticipant> monthlyDrawParticipant;
-
-
 
 }

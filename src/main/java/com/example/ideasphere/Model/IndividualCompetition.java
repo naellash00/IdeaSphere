@@ -23,7 +23,6 @@ public class IndividualCompetition {
     @Positive(message = "MonetaryReward must be a positive number")
     private Integer monetaryReward;
 
-
     @OneToOne
     @MapsId
     @JsonIgnore
@@ -32,5 +31,4 @@ public class IndividualCompetition {
     @ManyToOne
     @JsonIgnore
     private  IndividualOrganizer individualOrganizer;
-
 }

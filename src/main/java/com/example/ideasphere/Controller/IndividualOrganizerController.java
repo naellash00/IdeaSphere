@@ -20,13 +20,13 @@ public class IndividualOrganizerController {
     @Autowired
     private final IndividualOrganizerService individualOrganizerService;
 
-    @PostMapping("/register-IndividualOrganizer")
+    @PostMapping("/register")
     public ResponseEntity<ApiResponse> registerIndividualOrganize(@RequestBody @Valid IndividualOrganizerDTOsIN IndividualOrganizer) {
         individualOrganizerService.register(IndividualOrganizer);
         return ResponseEntity.status(200).body(new ApiResponse("Successfully registered Individual Organizer"));
     }
 
-    @PutMapping("/update-IndividualOrganizer")
+    @PutMapping("/update")
     public ResponseEntity<ApiResponse> updateIndividualOrganize(
             @AuthenticationPrincipal MyUser myUser,
             @Valid @RequestBody IndividualOrganizerDTOsIN individualOrganizerDTOsIN) {
@@ -34,11 +34,16 @@ public class IndividualOrganizerController {
         return ResponseEntity.status(200).body(new ApiResponse("individual Organizer updated successfully"));
     }
 
-    @DeleteMapping("/delete-IndividualOrganizer")
-    public ResponseEntity<ApiResponse> deleteIndividualOrganize(@AuthenticationPrincipal MyUser myUser) {
-        individualOrganizerService.deleteIndividualOrganizer(myUser.getId());
-        return ResponseEntity.status(200).body(new ApiResponse("individual Organizer deleted successfully"));
-    }
-
+//    @PutMapping("/active/{id}")
+//    public ResponseEntity<ApiResponse> active(@PathVariable Integer id){
+//        individualOrganizerService.activeIndividual(id);
+//        return ResponseEntity.ok().body(new ApiResponse("Individual Organizer is Active"));
+//    }
+//
+//    @PutMapping("/detective/{id}")
+//    public ResponseEntity<ApiResponse> detectiveCompany(@PathVariable Integer id){
+//        individualOrganizerService.detectiveIndividual(id);
+//        return ResponseEntity.ok().body(new ApiResponse("Individual Organizer is Detective"));
+//    }
 
 }

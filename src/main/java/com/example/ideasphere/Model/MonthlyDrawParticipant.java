@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 
 public class MonthlyDrawParticipant {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -28,15 +27,15 @@ public class MonthlyDrawParticipant {
     @Column(nullable = false)
     private Integer pointsUsed;
 
-    @Column(updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDate signUpDate;
+    @Column(updatable = false, insertable = false)
+    private LocalDate signUpDate = LocalDate.now();
 
     @ManyToOne
     @JsonIgnore
     private MonthlyDraw monthlyDraw;
 
-   @ManyToOne
+    @ManyToOne
+    @JsonIgnore
     private Participant participant ;
-
 
 }

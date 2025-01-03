@@ -2,6 +2,7 @@ package com.example.ideasphere.Service;
 
 
 import com.example.ideasphere.ApiResponse.ApiException;
+import com.example.ideasphere.DTOsOut.MonthlyDrawOutDTOs;
 import com.example.ideasphere.Model.MonthlyDraw;
 import com.example.ideasphere.Model.MyUser;
 import com.example.ideasphere.Repository.AuthRepository;
@@ -10,12 +11,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 
 public class MonthlyDrawService {
+
 
     @Autowired
     private final MonthlyDrawRepository monthlyDrawRepository;
@@ -25,8 +28,8 @@ public class MonthlyDrawService {
 
     public List<MonthlyDraw> findAllMonthlyDraws(Integer userId){
         MyUser user = authRepository.findMyUserById(userId);
-        if (userId == null){
-            throw new ApiException("user notfound");
+        if (user == null){
+            throw new ApiException("user not found with id " + userId);
         }
         return monthlyDrawRepository.findAll();
     }
@@ -34,8 +37,8 @@ public class MonthlyDrawService {
 
     public void addMonthlyDraw(Integer userId, MonthlyDraw monthlyDraw){
         MyUser user = authRepository.findMyUserById(userId);
-        if (userId == null){
-            throw new ApiException("user notfound");
+        if (user == null){
+            throw new ApiException("user not found with id " + userId);
         }
         monthlyDrawRepository.save(monthlyDraw);
     }
@@ -43,7 +46,7 @@ public class MonthlyDrawService {
     public void updateMonthlyDraw(Integer userId, MonthlyDraw monthlyDraw) {
         MyUser user = authRepository.findMyUserById(userId);
         if (user == null) {
-            throw new ApiException("User not found");
+            throw new ApiException("User not found with id " + userId);
         }
 
         MonthlyDraw existingMonthlyDraw = monthlyDrawRepository.findMonthlyDrawById(monthlyDraw.getId());
@@ -77,5 +80,54 @@ public class MonthlyDrawService {
         monthlyDrawRepository.delete(existingMonthlyDraw);
     }
 
+
+    // Get draws by specific name
+    public List<MonthlyDrawOutDTOs> findDrawsByName(Integer userId, String name) {
+        MyUser user = authRepository.findMyUserById(userId);
+        if (user == null){
+            throw new ApiException("User not found with id " + userId);
+        }
+        List<MonthlyDraw> monthlyDraws = monthlyDrawRepository.findMonthlyDrawByNameContaining(name);
+        List<MonthlyDrawOutDTOs> monthlyDrawOutDTOs = new ArrayList<>();
+        for (MonthlyDraw monthlyDraw : monthlyDraws) {
+            MonthlyDrawOutDTOs monthlyDrawOutDTOs1 = new MonthlyDrawOutDTOs(
+                    monthlyDraw.getId(),
+                    monthlyDraw.getName(),monthlyDraw.getDescription(),monthlyDraw.getPrize(),
+                    monthlyDraw.getImage(),monthlyDraw.getRequiredPoints(),
+                    monthlyDraw.getCreatedAt(),monthlyDraw.getEndDate(),monthlyDraw.getIsCompleted());
+
+            monthlyDrawOutDTOs.add(monthlyDrawOutDTOs1);
+        }
+        return monthlyDrawOutDTOs;
+    }
+
+    // Get draws by specific prize
+    public List<MonthlyDrawOutDTOs> findMonthlyDrawByPrize(Integer userId,String prize) {
+        MyUser user = authRepository.findMyUserById(userId);
+        if (user == null){
+            throw new ApiException("User not found with id " + userId);
+        }
+
+        List<MonthlyDraw> monthlyDraws = monthlyDrawRepository.findMonthlyDrawByPrizeContaining(prize);
+        List<MonthlyDrawOutDTOs> monthlyDrawOutDTOs = new ArrayList<>();
+
+        for (MonthlyDraw monthlyDraw : monthlyDraws) {
+            MonthlyDrawOutDTOs monthlyDrawOutDTOs1 = new MonthlyDrawOutDTOs(
+                    monthlyDraw.getId(),
+                    monthlyDraw.getName(),monthlyDraw.getDescription(),monthlyDraw.getPrize(),
+                    monthlyDraw.getImage(),monthlyDraw.getRequiredPoints(),
+                    monthlyDraw.getCreatedAt(),monthlyDraw.getEndDate(),monthlyDraw.getIsCompleted());
+
+            monthlyDrawOutDTOs.add(monthlyDrawOutDTOs1);
+        }
+        return monthlyDrawOutDTOs;
+    }
+
+    // Get the winner of a specific monthly draw
+    public String getMonthlyDrawWinner(Integer userId, Integer drawId) {
+        MonthlyDraw monthlyDraw = monthlyDrawRepository.findMonthlyDrawById(drawId);
+        MyUser user = authRepository.findMyUserById(monthlyDraw.getMonthlyDrawParticipantWinner().getId());
+        return "The Winner is " + user.getName();
+    }
 
 }

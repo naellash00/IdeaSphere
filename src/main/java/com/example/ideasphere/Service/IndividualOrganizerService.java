@@ -29,16 +29,17 @@ public class IndividualOrganizerService {
         MyUser myUser = new MyUser();
         myUser.setName(individualOrganizer.getName());
         myUser.setUsername(individualOrganizer.getUsername());
-        myUser.setPassword(passwordEncoder.encode(individualOrganizer.getPassword()) );
+        myUser.setPassword(passwordEncoder.encode(individualOrganizer.getPassword()));
         myUser.setEmail(individualOrganizer.getEmail());
         myUser.setRole("INDIVIDUAL");
+
+        myUser = authRepository.save(myUser);
 
         IndividualOrganizer individualOrganizer1 = new IndividualOrganizer();
         individualOrganizer1.setPhoneNumber(individualOrganizer.getPhoneNumber());
         individualOrganizer1.setMyUser(myUser);
 
         individualOrganizerRepository.save(individualOrganizer1);
-        authRepository.save(myUser);
 
     }
 
@@ -60,28 +61,45 @@ public class IndividualOrganizerService {
         oldUser.setPassword(passwordEncoder.encode(rganizerDTOsIN.getPassword()) );
         oldUser.setEmail(rganizerDTOsIN.getEmail());
         oldUser.setRole("INDIVIDUAL");
+        authRepository.save(oldUser);
 
         old.setPhoneNumber(rganizerDTOsIN.getPhoneNumber());
         old.setMyUser(user);
 
         individualOrganizerRepository.save(old);
-        authRepository.save(oldUser);
+
 
     }
 
-    // delete Individual Organizer  user
-     public void deleteIndividualOrganizer(Integer userId) {
 
+//    public void activeIndividual(Integer id){
+//
+//        IndividualOrganizer individualOrganizer = individualOrganizerRepository.findIndividualOrganizerById(id);
+//        if (individualOrganizer == null) {
+//            throw new ApiException("Error :  Individual Organizer not found");
+//        }
+//        if (individualOrganizer.getStatus().equalsIgnoreCase("Active")) throw new ApiException("Error: Individual already Active");
+//
+//        individualOrganizer.setStatus("Active");
+//
+//        individualOrganizerRepository.save(individualOrganizer);
+//    }
+//
+//
+//    public void detectiveIndividual(Integer id){
+//
+//        IndividualOrganizer individualOrganizer = individualOrganizerRepository.findIndividualOrganizerById(id);
+//        if (individualOrganizer == null) {
+//            throw new ApiException("Error :  Individual Organizer not found");
+//        }
+//        if (individualOrganizer.getStatus().equalsIgnoreCase("Not Active")) throw new ApiException("Error: Individual already Not Active");
+//
+//        individualOrganizer.setStatus("Not Active");
+//
+//        individualOrganizerRepository.save(individualOrganizer);
+//
+//    }
 
-            IndividualOrganizer Io = individualOrganizerRepository.findIndividualOrganizerById(userId);
-            if (Io == null) {
-                throw new ApiException("Employee not found");
-            }
-            MyUser user = authRepository.findMyUserById(Io.getMyUser().getId());
-
-            individualOrganizerRepository.delete(Io);
-            Io.setMyUser(null);
-        }
 
 
 }
