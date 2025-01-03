@@ -31,6 +31,7 @@ public class VoteService {
         Vote vote = new Vote();
         vote.setVoter(voter);
         vote.setSubmission(submission);
+        vote.setVoteDate(LocalDateTime.now());
 
         submission.getVotes().add(vote);
         voteRepository.save(vote);

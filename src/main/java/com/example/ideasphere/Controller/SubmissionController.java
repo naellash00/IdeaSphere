@@ -14,15 +14,19 @@ import org.springframework.web.bind.annotation.*;
 public class SubmissionController {
     private final SubmissionService submissionService;
 
-    @PostMapping("/submit/{participant_id}")
-    public ResponseEntity submit(@PathVariable Integer participant_id, @RequestBody @Valid Submission submission){
-        submissionService.submit(participant_id, submission);
+    @GetMapping("/get/submissions")
+    public ResponseEntity getAllSubmissions(){
+        return ResponseEntity.status(200).body(submissionService.getAllSubmissions());
+    }
+    @PostMapping("/submit/{participant_id}/{competition_id}")
+    public ResponseEntity submit(@PathVariable Integer participant_id, @PathVariable Integer competition_id, @RequestBody @Valid Submission submission){
+        //submissionService.submit(participant_id, submission);
+        submissionService.submit(participant_id, competition_id, submission);
         return ResponseEntity.status(200).body(new ApiResponse("Submit Completed Successfully"));
     }
 
-    @PutMapping("/update/{participant_id}/{submission_id}")
-    public ResponseEntity updateSubmission(@PathVariable Integer participant_id, @PathVariable Integer submission_id, @RequestBody @Valid Submission submission){
-        submissionService.updateSubmission(participant_id, submission_id, submission);
-        return ResponseEntity.status(200).body(new ApiResponse("Submission Updated Successfully"));
+    @GetMapping("/get/my-submissions/{participant_id}")
+    public ResponseEntity getMySubmissions(@PathVariable Integer participant_id){
+        return ResponseEntity.status(200).body(submissionService.getMySubmissions(participant_id));
     }
 }

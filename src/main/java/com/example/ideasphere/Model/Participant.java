@@ -26,7 +26,7 @@ public class Participant { // Naelah
     private String BankAccountNumber;
 
     @Column(columnDefinition = "int")
-    private Integer points;
+    private Integer points = 0;
 
     @OneToOne
     @MapsId

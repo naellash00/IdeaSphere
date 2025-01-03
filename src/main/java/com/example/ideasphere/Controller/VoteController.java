@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class VoteController {
     private final VoteService voteService;
-
     @PutMapping("/vote/{voter_id}/{submission_id}")
     public ResponseEntity vote(@PathVariable Integer voter_id, @PathVariable Integer submission_id){
         voteService.vote(voter_id, submission_id);

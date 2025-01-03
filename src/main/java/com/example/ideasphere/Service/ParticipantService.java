@@ -2,6 +2,9 @@ package com.example.ideasphere.Service;
 
 import com.example.ideasphere.ApiResponse.ApiException;
 import com.example.ideasphere.DTOsIN.ParticipantInDTO;
+import com.example.ideasphere.DTOsOut.CategoryOutDTO;
+import com.example.ideasphere.DTOsOut.ParticipantOutDTO;
+import com.example.ideasphere.Model.Category;
 import com.example.ideasphere.Model.MyUser;
 import com.example.ideasphere.Model.Participant;
 import com.example.ideasphere.Repository.AuthRepository;
@@ -11,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,13 +23,25 @@ public class ParticipantService { // Naelah
     private final AuthRepository authRepository;
     private final ParticipantRepository participantRepository;
 
-    public List<Participant> getAllParticipants(){
-        return participantRepository.findAll();
+    //    public List<Participant> getAllParticipants(){
+//        return participantRepository.findAll();
+//    }
+    public List<ParticipantOutDTO> getAllParticipants(){
+        List<Participant> participants = participantRepository.findAll();
+        List<ParticipantOutDTO> participantOutDTOS = new ArrayList<>();
+        for(Participant p : participants){
+            List<CategoryOutDTO> categoryOutDTOS = new ArrayList<>();
+            for (Category c : p.getCategories()){
+                categoryOutDTOS.add(new CategoryOutDTO(c.getCategoryName()));
+            }
+            ParticipantOutDTO participantOutDTO = new ParticipantOutDTO(p.getUser().getUsername(), p.getUser().getName(), p.getUser().getEmail(), categoryOutDTOS);
+            participantOutDTOS.add(participantOutDTO);
+        }
+        return participantOutDTOS;
     }
 
     public void register(ParticipantInDTO participantInDTO){
         MyUser user = new MyUser();
-        //Participant participant = new Participant(null, participantInDTO.getBankAccountNumber(), null, user, null);
         Participant participant = new Participant();
         user.setRole("PARTICIPANT");
         user.setUsername(participantInDTO.getUsername());
@@ -57,15 +73,5 @@ public class ParticipantService { // Naelah
 
         authRepository.save(user);
         participantRepository.save(oldParticipant);
-    }
-
-    public void deleteParticipant(Integer id){
-        MyUser user = authRepository.findMyUserById(id);
-        Participant participant = participantRepository.findParticipantById(id);
-        if(user == null || participant == null){
-            throw  new ApiException("Participant not found");
-        }
-        authRepository.delete(user);
-        participantRepository.delete(participant);
     }
 }
