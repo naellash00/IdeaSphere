@@ -1,14 +1,18 @@
 package com.example.ideasphere.Service;
 
 import com.example.ideasphere.ApiResponse.ApiException;
+import com.example.ideasphere.DTOsOut.SubmissionOutDTO;
+import com.example.ideasphere.Model.Competition;
 import com.example.ideasphere.Model.Participant;
 import com.example.ideasphere.Model.Submission;
+import com.example.ideasphere.Repository.CompetitionRepository;
 import com.example.ideasphere.Repository.ParticipantRepository;
 import com.example.ideasphere.Repository.SubmissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service

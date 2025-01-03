@@ -10,7 +10,6 @@ public class CompetitionService {
 
     private final CompetitionRepository competitionRepository;
 
-    public void add(){
 
-    }
+
 }

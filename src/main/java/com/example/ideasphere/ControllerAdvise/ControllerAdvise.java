@@ -12,11 +12,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-public class ControllerAdvice {
+@ControllerAdvice
+public class ControllerAdvise {
     @ExceptionHandler(value = ApiException.class)
     public ResponseEntity<ApiResponse> ApiException(ApiException e) {
 
@@ -27,7 +29,7 @@ public class ControllerAdvice {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> MethodArgumentNotValidException(MethodArgumentNotValidException e) {
 
-        String message = e.getMessage();
+        String message = e.getFieldError().getDefaultMessage();
 
 
         return ResponseEntity.status(400).body(new ApiResponse(message));

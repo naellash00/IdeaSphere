@@ -1,7 +1,6 @@
 package com.example.ideasphere.DTOsIN;
 
 import com.example.ideasphere.Model.Category;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,11 +9,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.Set;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyCompetitionDTOIn {
+public class CompanyCompetitionInterviewDTOIn {
 
     private Integer id;
 
@@ -26,30 +24,21 @@ public class CompanyCompetitionDTOIn {
     @Size(min = 30 ,max = 255, message = "Error: description length must more then 30 and less then 255")
     private String description;
 
-    @NotEmpty(message = "Error: votingMethod is empty")
-    @Pattern(regexp = "By Organizer|By Public Vote" , message = "Error: voting method only By Organizer|By Public Vote")
-    private String votingMethod;
-
     private String competitionImage;
 
+    @NotNull(message = "Error : category is empty must at least one or more")
     Set<Category> categories;
 
 
-    @NotNull(message = "Error: voteStartDate is empty")
-    @Future(message = "Error: voteStartDate must be in Future")
-    private LocalDate voteStartDate;
-
-    @NotNull(message = "Error: voteEndDate is empty")
-    @Future(message = "Error: voteEndDate must be in Future")
-    private LocalDate voteEndDate;
 
     @NotNull(message = "Error: endDate is empty")
     @Future(message = "Error: endDate must be in Future")
     private LocalDate endDate;
 
     @NotNull(message = "Error: maxParticipants is empty")
+    @Max(value = 500 , message = "Error :maxParticipants the max is 500 ")
+    @Positive(message = "Error: maxParticipants must be Positive")
     @Min(value = 5 , message = "Error: maxParticipants must more or equal 5")
     private Integer maxParticipants;
-
 
 }

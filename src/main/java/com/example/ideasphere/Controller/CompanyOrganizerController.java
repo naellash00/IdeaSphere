@@ -28,19 +28,19 @@ public class CompanyOrganizerController {
         companyOrganizerService.register(companyOrganizerDTOIn);
         return ResponseEntity.status(201).body(new ApiResponse("Company Organizer is Registered"));
     }
-    @PutMapping("/update")
+    @PutMapping("/update-profile")
     public ResponseEntity update(@AuthenticationPrincipal MyUser myUser ,@RequestBody @Valid CompanyOrganizerDTOIn companyOrganizerDTOIn){
         companyOrganizerService.updateProfile(myUser.getId() , companyOrganizerDTOIn);
         return ResponseEntity.status(200).body(new ApiResponse("Company Organizer is updated"));
     }
 
-    @PutMapping("/active/{id}")
+    @PutMapping("/active-user/{id}")
     public ResponseEntity active(@PathVariable Integer id){
         companyOrganizerService.activeCompany(id);
         return ResponseEntity.ok().body(new ApiResponse("Company Organizer is Active"));
     }
 
-    @PutMapping("/detective/{id}")
+    @PutMapping("/detective-user/{id}")
     public ResponseEntity detectiveCompany(@PathVariable Integer id){
         companyOrganizerService.detectiveCompany(id);
         return ResponseEntity.ok().body(new ApiResponse("Company Organizer is Detectived"));

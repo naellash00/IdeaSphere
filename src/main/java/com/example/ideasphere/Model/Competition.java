@@ -40,14 +40,8 @@ public class Competition {
 
     private String competitionImage;
 
-    @NotNull(message = "Error: voteStartDate is empty")
-    @Future(message = "Error: voteStartDate must be in Future")
-    @Column(nullable = false )
-    private LocalDate voteStartDate;
 
-    @NotNull(message = "Error: voteEndDate is empty")
-    @Future(message = "Error: voteEndDate must be in Future")
-    @Column(nullable = false )
+
     private LocalDate voteEndDate;
 
     @NotNull(message = "Error: endDate is empty")
@@ -57,6 +51,8 @@ public class Competition {
 
     @NotNull(message = "Error: maxParticipants is empty")
     @Min(value = 5 , message = "Error: maxParticipants must more or equal 5")
+    @Max(value = 500 , message = "Error :maxParticipants the max is 500 ")
+    @Positive(message = "Error: maxParticipants must be Positive")
     @Column(nullable = false )
     private Integer maxParticipants;
 
