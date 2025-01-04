@@ -55,6 +55,8 @@ public class CompanyCompetitionService {
         checkCategoryExist(competitionDTO.getCategories());
         // validation check dates
         checkEndDateAndVoteEndDate(competitionDTO.getEndDate(), null);
+
+
         // Map DTO to entity
         Competition competition = new Competition();
         competition.setTitle(competitionDTO.getTitle());
@@ -202,6 +204,8 @@ public class CompanyCompetitionService {
         checkEndDateAndVoteEndDate(companyCompetition.getCompetition().getEndDate(), companyCompetitionExtendDTOIn.getEndDate(), companyCompetitionExtendDTOIn.getVoteEndDate());
 
 
+        // check the competition have max Participant and make sure organizer increase Participant if he wants extend
+        if (competition.getSubmissions().size() >= competition.getMaxParticipants() && companyCompetitionExtendDTOIn.getIncreaseParticipants() == 0) throw new ApiException("Error: competition have max Participant you must increase Participant if you want extend ");
 
 
         competition.setEndDate(companyCompetitionExtendDTOIn.getEndDate());

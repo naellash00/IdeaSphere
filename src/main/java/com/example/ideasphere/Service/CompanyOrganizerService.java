@@ -85,32 +85,7 @@ public class CompanyOrganizerService {
         companyOrganizerRepository.save(companyOrganizer);
     }
 
-    public void activeCompany(Integer id){
 
-        CompanyOrganizer companyOrganizer = companyOrganizerRepository.findCompanyOrganizerById(id);
-        if (companyOrganizer == null) throw new ApiException("Error : Company organizer not found ");
-
-        if (companyOrganizer.getStatus().equalsIgnoreCase("Active")) throw new ApiException("Error: Company already Active");
-
-
-        companyOrganizer.setStatus("Active");
-
-        companyOrganizerRepository.save(companyOrganizer);
-    }
-
-
-    public void detectiveCompany(Integer id){
-
-        CompanyOrganizer companyOrganizer = companyOrganizerRepository.findCompanyOrganizerById(id);
-        if (companyOrganizer == null) throw new ApiException("Error : Company organizer not found ");
-
-        if (companyOrganizer.getStatus().equalsIgnoreCase("Not Active")) throw new ApiException("Error: Company already Not Active");
-
-
-        companyOrganizer.setStatus("Not Active");
-
-        companyOrganizerRepository.save(companyOrganizer);
-    }
 
     public CompanyOrganizerDTOOut ConvertDTOOut(MyUser myUser){
         CompanyOrganizerDTOOut companyOrganizerDTOOut = new CompanyOrganizerDTOOut();

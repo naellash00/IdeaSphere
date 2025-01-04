@@ -17,7 +17,7 @@ public class CompetitionPaymentController {
     private final CompetitionPaymentService competitionPaymentService;
 
 
-    @GetMapping("/get-my-competition-Payment")
+    @GetMapping("/get-my-competition-payment")
     public ResponseEntity getAllMyCompetitionPayment(@AuthenticationPrincipal MyUser myUser){
         return ResponseEntity.ok(competitionPaymentService.getAllMyCompetitionPayment(myUser.getId()));
     }

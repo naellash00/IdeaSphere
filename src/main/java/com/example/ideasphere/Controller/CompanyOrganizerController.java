@@ -34,15 +34,5 @@ public class CompanyOrganizerController {
         return ResponseEntity.status(200).body(new ApiResponse("Company Organizer is updated"));
     }
 
-    @PutMapping("/active-user/{id}")
-    public ResponseEntity active(@PathVariable Integer id){
-        companyOrganizerService.activeCompany(id);
-        return ResponseEntity.ok().body(new ApiResponse("Company Organizer is Active"));
-    }
 
-    @PutMapping("/detective-user/{id}")
-    public ResponseEntity detectiveCompany(@PathVariable Integer id){
-        companyOrganizerService.detectiveCompany(id);
-        return ResponseEntity.ok().body(new ApiResponse("Company Organizer is Detectived"));
-    }
 }
