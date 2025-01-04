@@ -190,10 +190,17 @@ public class CompanyCompetitionService {
         || status.equalsIgnoreCase("Waiting payment" )
         || status.equalsIgnoreCase("canceled" )) throw new ApiException("Error: the Competition status is ("+status+") you can't extend the Competition") ;
 
+        Competition competition = companyCompetition.getCompetition();
+
+        if (competition.getVotingMethod().equalsIgnoreCase("By Organizer")){
+            companyCompetitionExtendDTOIn.setVoteEndDate(null);
+        }
+
         // check dates
         checkEndDateAndVoteEndDate(companyCompetition.getCompetition().getEndDate(), companyCompetitionExtendDTOIn.getEndDate(), companyCompetitionExtendDTOIn.getVoteEndDate());
 
-        Competition competition = companyCompetition.getCompetition();
+
+
 
         competition.setEndDate(companyCompetitionExtendDTOIn.getEndDate());
         competition.setVoteEndDate(companyCompetitionExtendDTOIn.getVoteEndDate());

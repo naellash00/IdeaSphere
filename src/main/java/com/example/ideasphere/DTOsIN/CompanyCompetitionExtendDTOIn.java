@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class CompanyCompetitionExtendDTOIn {
 
-    @NotEmpty(message = "Error: id is empty")
+    @NotNull(message = "Error: id is empty")
     private Integer id;
 
 
