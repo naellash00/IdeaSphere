@@ -19,22 +19,28 @@ public class VoteService {
     private final ParticipantRepository participantRepository;
     private final SubmissionRepository submissionRepository;
 
-    public void vote(Integer voter_id, Integer submission_id){
+    public void vote(Integer voter_id, Integer submission_id) {
         Participant voter = participantRepository.findParticipantById(voter_id);
         Submission submission = submissionRepository.findSubmissionById(submission_id);
-        if(voter == null){
+        if (voter == null) {
             throw new ApiException("voter not found");
         }
-        if(submission == null){
+        if (submission == null) {
             throw new ApiException("submission not found");
+        }
+        if (!submission.getCompetition().getVotingMethod().equalsIgnoreCase("By Public Vote")) {
+            throw new ApiException("this competition is not under vote");
         }
         Vote vote = new Vote();
         vote.setVoter(voter);
         vote.setSubmission(submission);
         vote.setVoteDate(LocalDateTime.now());
+        // add points to the voter
+        voter.setPoints(voter.getPoints() + 10);
 
         submission.getVotes().add(vote);
         voteRepository.save(vote);
         submissionRepository.save(submission);
+        participantRepository.save(voter);
     }
 }

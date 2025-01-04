@@ -2,11 +2,13 @@ package com.example.ideasphere.Controller;
 
 import com.example.ideasphere.ApiResponse.ApiResponse;
 import com.example.ideasphere.DTOsIN.ParticipantInDTO;
+import com.example.ideasphere.Model.MyUser;
 import com.example.ideasphere.Service.CategoryService;
 import com.example.ideasphere.Service.ParticipantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,5 +39,10 @@ public class ParticipantController { // Naelah
     public ResponseEntity addCategory(@PathVariable Integer participant_id, @PathVariable Integer category_id){
         categoryService.addCategory(participant_id, category_id);
         return ResponseEntity.status(200).body(new ApiResponse("Category Added To Your Profile Successfully"));
+    }
+
+    @GetMapping("/get/my-achievement")
+    public ResponseEntity getMyAchievements(@AuthenticationPrincipal MyUser myUser){
+        return ResponseEntity.status(200).body(participantService.getMyAchievements(myUser.getId()));
     }
 }

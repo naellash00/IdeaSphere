@@ -4,10 +4,7 @@ package com.example.ideasphere.Service;
 import com.example.ideasphere.ApiResponse.ApiException;
 import com.example.ideasphere.DTOsIN.IndividualCompetitionDTOsIN;
 import com.example.ideasphere.DTOsIN.IndividualOrganizerDTOsIN;
-import com.example.ideasphere.Model.Category;
-import com.example.ideasphere.Model.Competition;
-import com.example.ideasphere.Model.IndividualCompetition;
-import com.example.ideasphere.Model.MyUser;
+import com.example.ideasphere.Model.*;
 import com.example.ideasphere.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +25,7 @@ public class IndividualCompetitionService {
     private final CompetitionRepository competitionRepository;
     @Autowired
     private final AuthRepository authRepository;
+    private final SubmissionRepository submissionRepository;
 
 
     public  List<IndividualCompetition> findAllIndividualCompetitions(Integer userId){
@@ -118,7 +116,22 @@ public class IndividualCompetitionService {
         individualCompetitionRepository.save(existingIndividualCompetition);
     }
 
-
-
+    // Naelah
+    public void selectWinner(Integer competition_id, Integer submission_id) {
+        Competition competition = competitionRepository.findCompetitionById(competition_id);
+        Submission submission = submissionRepository.findSubmissionById(submission_id);
+        if (competition == null) {
+            throw new ApiException("competition not found");
+        }
+        if (submission == null) {
+            throw new ApiException("submission not found");
+        }
+        // check the same submission in the competition
+        if (!submission.getCompetition().getId().equals(competition.getId())) {
+            throw new ApiException("Incorrect submission for competition");
+        }
+        competition.setParticipantWinner(submission.getParticipant());
+        competitionRepository.save(competition);
+    }
 
 }

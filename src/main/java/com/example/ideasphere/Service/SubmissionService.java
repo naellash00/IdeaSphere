@@ -25,18 +25,7 @@ public class SubmissionService {
     public List<Submission> getAllSubmissions(){
         return submissionRepository.findAll();
     }
-    // add submission
-//    public void submit(Integer participant_id, Submission submission){
-//        Participant participant = participantRepository.findParticipantById(participant_id);
-//        if(participant == null){
-//            throw new ApiException("participant not found");
-//        }
-//        submission.setParticipant(participant);
-//        submission.setSubmittedAt(LocalDateTime.now());
-//        submissionRepository.save(submission);
-//    }
 
-    // not tested
     public void submit(Integer participant_id, Integer competition_id, Submission submission){
         Participant participant = participantRepository.findParticipantById(participant_id);
         Competition competition = competitionRepository.findCompetitionById(competition_id);
@@ -60,6 +49,25 @@ public class SubmissionService {
             submissionOutDTOS.add(new SubmissionOutDTO(s.getPDFFile(), s.getFileURL(), s.getSecondFileURL(),s.getThirdFileURL(),s.getDescription(), s.getSubmittedAt(), s.getCompetition().getTitle()));
         }
         return submissionOutDTOS;
+    }
+
+    // helper method to find what competition the participant won
+    public Submission findTheCompetitionIWon(Integer competition_id, Integer participant_id){
+        Participant participant = participantRepository.findParticipantById(participant_id);
+        Competition competition = competitionRepository.findCompetitionById(competition_id);
+        if(competition == null){
+            throw new ApiException("competition not found");
+        }
+        if(participant == null){
+            throw new ApiException("participant not found");
+        }
+
+        for(Submission submission : participant.getSubmissions()){
+            if(submission.getCompetition().getId().equals(competition.getId())){
+                return submission;
+            }
+        }
+        return null;
     }
 
 }

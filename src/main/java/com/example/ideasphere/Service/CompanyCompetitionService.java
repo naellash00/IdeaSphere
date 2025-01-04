@@ -342,14 +342,20 @@ public class CompanyCompetitionService {
     }
 
     // Naelah
-    public void addAchievementToWinner(Integer competition_id, Integer participant_id){
-        Participant participant = participantRepository.findParticipantById(participant_id);
+    public void selectWinner(Integer competition_id, Integer submission_id) {
         Competition competition = competitionRepository.findCompetitionById(competition_id);
-        if(participant == null){
-            throw new ApiException("participant not found");
-        }
+        Submission submission = submissionRepository.findSubmissionById(submission_id);
         if(competition == null){
             throw new ApiException("competition not found");
         }
+        if(submission == null){
+            throw new ApiException("submission not found");
+        }
+        // check submission is for this competition
+        if(!submission.getCompetition().getId().equals(competition.getId())){
+            throw new ApiException("Incorrect submission for competition");
+        }
+        competition.setParticipantWinner(submission.getParticipant());
+        competitionRepository.save(competition);
     }
 }

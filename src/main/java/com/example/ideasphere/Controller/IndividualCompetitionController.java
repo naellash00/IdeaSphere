@@ -43,4 +43,10 @@ public class IndividualCompetitionController {
         return ResponseEntity.status(200).body(new ApiResponse("Successfully updated individualCompetition."));
     }
 
+    @PutMapping("/select/winner/{competition_id}/{submission_id}")
+    public ResponseEntity selectWinner(@PathVariable Integer competition_id, @PathVariable Integer submission_id){
+        individualCompetitionService.selectWinner(competition_id, submission_id);
+        return ResponseEntity.status(200).body(new ApiResponse("Winner Selected Successfully"));
+    }
+
 }
