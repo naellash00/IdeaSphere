@@ -54,4 +54,7 @@ public class Participant { // Naelah
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private Set<Category> categories;
+
+    @OneToMany(cascade = CascadeType.ALL ,mappedBy = "participantWinner")
+    private Set<WinnerPayment> winnerPayments;
 }

@@ -85,6 +85,11 @@ public class Competition {
     @OneToMany(cascade = CascadeType.ALL ,mappedBy = "competition")
     private Set<Vote> votes;
 
+    @OneToMany(cascade = CascadeType.ALL ,mappedBy = "competition")
+    private Set<CompetitionPayment> competitionPayments;
 
+
+    @OneToMany(cascade = CascadeType.ALL ,mappedBy = "competition")
+    private Set<WinnerPayment> winnerPayments;
 
 }

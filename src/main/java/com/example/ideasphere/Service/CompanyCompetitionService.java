@@ -22,6 +22,8 @@ public class CompanyCompetitionService {
     private final AuthRepository authRepository;
     private final CategoryRepository categoryRepository;
     private final ParticipantRepository participantRepository;
+    private final CompetitionPaymentRepository competitionPaymentRepository;
+    private final SubmissionRepository submissionRepository;
 
 
     public List<CompanyCompetitionDTOOut> getAllCompanyCompetition(){
@@ -236,6 +238,38 @@ public class CompanyCompetitionService {
 
         competitionRepository.save(competition);
     }
+
+
+    public void addPayment(Integer user_id, CompanyCompetitionPaymentDTOIn competitionPaymentDTOIn){
+        MyUser myUser = authRepository.findMyUserById(user_id);
+        if (myUser == null) throw new ApiException("Error :user not found");
+
+        CompanyCompetition companyCompetition = companyCompetitionRepository.findCompanyCompetitionById(competitionPaymentDTOIn.getCompanyCompetitionId());
+
+        if (companyCompetition == null) throw new ApiException("Error: companyCompetition not found");
+
+        if ( !companyCompetition.getCompanyOrganizer().getId().equals(myUser.getId())) throw new ApiException("Error: this competition not belong to you, you can't make payment.");
+
+        if (!companyCompetition.getCompetition().getStatus().equalsIgnoreCase("Waiting payment")) throw new ApiException("Error: the Competition status is ("+companyCompetition.getCompetition().getStatus()+"), you can't make payment");
+
+        CompetitionPayment duplicatedPayment = competitionPaymentRepository.findCompetitionPaymentByCompetitionId(companyCompetition.getCompetition().getId());
+
+        if (duplicatedPayment != null ) throw new ApiException("Error: payment already created");
+
+        CompetitionPayment competitionPayment = new CompetitionPayment();
+
+        competitionPayment.setPaymentMethod(competitionPaymentDTOIn.getPaymentMethod());
+        competitionPayment.setPaymentStatus("Completed");
+        competitionPayment.setAmount(companyCompetition.getMonetaryReward());
+        competitionPayment.setCompetition(companyCompetition.getCompetition());
+
+        competitionPaymentRepository.save(competitionPayment);
+
+        Competition competition = companyCompetition.getCompetition();
+        competition.setStatus("Ongoing");
+        competitionRepository.save(competition);
+    }
+
     public void checkCategoryExist(Set<Category> categories){
         for(Category category : categories){
             Category findCategory = categoryRepository.findCategoryById(category.getId());

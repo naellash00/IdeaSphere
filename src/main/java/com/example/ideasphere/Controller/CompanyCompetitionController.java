@@ -63,6 +63,13 @@ public class CompanyCompetitionController {
         companyCompetitionService.createCompetitionFinancialByOrganizerDTOIn(myUser.getId(), competitionDTO);
         return ResponseEntity.status(201).body(new ApiResponse("Competition created successfully."));
     }
+    @PostMapping("/add-competition-payment")
+    public ResponseEntity<ApiResponse> addPayment(
+            @AuthenticationPrincipal MyUser myUser,
+            @RequestBody @Valid CompanyCompetitionPaymentDTOIn competitionPaymentDTOIn){
+        companyCompetitionService.addPayment(myUser.getId(), competitionPaymentDTOIn);
+        return ResponseEntity.status(200).body(new ApiResponse("Competition added payment successfully."));
+    }
 
     @PutMapping("/extend-competition")
     public ResponseEntity<ApiResponse> extendCompetition(
@@ -79,4 +86,12 @@ public class CompanyCompetitionController {
         companyCompetitionService.updateCompetition(myUser.getId(), companyCompetitionUpdateDTOIn);
         return ResponseEntity.status(200).body(new ApiResponse("Competition updated successfully."));
     }
+
+    @PutMapping("/select/winner/{competition_id}/{submission_id}")
+    public ResponseEntity selectWinner(@AuthenticationPrincipal MyUser myUser, @PathVariable Integer competition_id, @PathVariable Integer submission_id){
+        companyCompetitionService.selectWinner(competition_id, submission_id);
+        return ResponseEntity.status(200).body(new ApiResponse("Winner Selected Successfully"));
+    }
+
+
 }
