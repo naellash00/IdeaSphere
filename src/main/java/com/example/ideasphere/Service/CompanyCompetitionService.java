@@ -188,6 +188,7 @@ public class CompanyCompetitionService {
 
         if (!myUser.getCompanyOrganizer().getId().equals(companyCompetition.getCompanyOrganizer().getId())) throw new ApiException("Error: this Competition not belong to you");
 
+
         String status =  companyCompetition.getCompetition().getStatus();
         // check status
         if (status.equalsIgnoreCase("Completed")
@@ -195,6 +196,8 @@ public class CompanyCompetitionService {
         || status.equalsIgnoreCase("canceled" )) throw new ApiException("Error: the Competition status is ("+status+") you can't extend the Competition") ;
 
         Competition competition = companyCompetition.getCompetition();
+
+        if (competition.getCountExtend() >=3) throw new ApiException("Error: you have the maximum extending of the competition ");
 
         if (competition.getVotingMethod().equalsIgnoreCase("By Organizer")){
             companyCompetitionExtendDTOIn.setVoteEndDate(null);
@@ -212,6 +215,7 @@ public class CompanyCompetitionService {
         competition.setVoteEndDate(companyCompetitionExtendDTOIn.getVoteEndDate());
         competition.setMaxParticipants(competition.getMaxParticipants() + companyCompetitionExtendDTOIn.getIncreaseParticipants());
         competition.setStatus("Ongoing");
+        competition.setCountExtend(competition.getCountExtend()+1);
 
         competitionRepository.save(competition);
     }
@@ -314,6 +318,7 @@ public class CompanyCompetitionService {
                 competition.getVoteEndDate(),
                 competition.getEndDate(),
                 competition.getMaxParticipants(),
+                competition.getCountExtend(),
                 competition.getStatus(),
                 competition.getCategories().stream().map(Category::getCategoryName).collect(Collectors.toSet()),
                 companyCompetition.getRewardType(),
@@ -348,18 +353,118 @@ public class CompanyCompetitionService {
     // Naelah
     public void selectWinner(Integer competition_id, Integer submission_id) {
         Competition competition = competitionRepository.findCompetitionById(competition_id);
+        CompanyCompetition companyCompetition = companyCompetitionRepository.findCompanyCompetitionById(competition.getId());
         Submission submission = submissionRepository.findSubmissionById(submission_id);
-        if(competition == null){
+        WinnerPayment winnerPayment = new WinnerPayment();
+        if (competition == null || companyCompetition == null) {
             throw new ApiException("competition not found");
         }
-        if(submission == null){
+        if (submission == null) {
             throw new ApiException("submission not found");
         }
         // check submission is for this competition
-        if(!submission.getCompetition().getId().equals(competition.getId())){
+        if (!submission.getCompetition().getId().equals(competition.getId())) {
             throw new ApiException("Incorrect submission for competition");
         }
+
         competition.setParticipantWinner(submission.getParticipant());
+
+//        // winner payment
+//        winnerPayment.setParticipantWinner(submission.getParticipant());
+//        winnerPayment.setCompetition(competition);
+//        winnerPayment.setAmount(companyCompetition.getMonetaryReward());
+//        winnerPayment.setTransferDate(LocalDateTime.now());
+//        winnerPayment.setTransferStatus("Completed");
+//        winnerPayment.setTransferMethod("Bank Transfer");
+//        winnerPayment.setCreatedAt(LocalDateTime.now());
+//        winnerPayment.setUpdatedAt(LocalDateTime.now());
+
+        winnerPaymentService.completeWinnerPaymentDetails(competition.getId(), submission.getId());
+
         competitionRepository.save(competition);
+        companyCompetitionRepository.save(companyCompetition);
+        winnerPaymentRepository.save(winnerPayment);
+    }
+
+    //Naelah
+    public void assignVotingCompetitionWinner(Integer competition_id) {
+        Competition competition = competitionRepository.findCompetitionById(competition_id);
+        // set of this competition submissions
+        Set<Submission> submissions = competition.getSubmissions();
+        if (competition == null) {
+            throw new ApiException("competition not found");
+        }
+        if(submissions.isEmpty()){
+            throw new ApiException("no submissions found");
+        }
+
+        Participant winnerParticipant = null;
+        int maxNumberOfVotes = 0;
+
+        for (Submission submission : submissions) {
+            // the number of votes in this submission
+            int numberOfVotes = submission.getVotes().size();
+            if (numberOfVotes > maxNumberOfVotes) {
+                maxNumberOfVotes = numberOfVotes;
+                // set the winner
+                winnerParticipant = submission.getParticipant();
+                winnerPaymentService.completeWinnerPaymentDetails(competition.getId(), submission.getId());
+            }
+        }
+
+        if(winnerParticipant == null){
+            throw new ApiException("winner of this competition not found");
+        }
+        // set the winner in the competition
+        competition.setParticipantWinner(winnerParticipant);
+        competitionRepository.save(competition);
+    }
+
+    //Naelah
+    public void acceptFeedbackRequest(Integer company_organizer_id, Integer submission_id, String feedback){
+        Submission submission = submissionRepository.findSubmissionById(submission_id);
+        if(submission == null){
+            throw new ApiException("submission not found");
+        }
+        if(!submission.getFeedbackRequestStatus().equalsIgnoreCase("Pending")){
+            throw new ApiException("submission dose not have feedback request");
+        }
+        if(!submission.getCompetition().getCompanyCompetition().getCompanyOrganizer().getId().equals(company_organizer_id)){
+            throw new ApiException("cannot respond to this request");
+        }
+        submission.setFeedbackRequestStatus("Accepted");
+        submission.setOrganizerFeedback(feedback);
+        //FeedbackOutDTO feedbackOutDTO = new FeedbackOutDTO("Accepted", feedback);
+        submissionRepository.save(submission);
+    }
+
+    //Naelah
+    public void rejectFeedbackRequest(Integer company_organizer_id, Integer submission_id){
+        Submission submission = submissionRepository.findSubmissionById(submission_id);
+        if(submission == null){
+            throw new ApiException("submission not found");
+        }
+        if(!submission.getFeedbackRequestStatus().equalsIgnoreCase("Pending")){
+            throw new ApiException("submission dose not have feedback request");
+        }
+        if(!submission.getCompetition().getCompanyCompetition().getCompanyOrganizer().getId().equals(company_organizer_id)){
+            throw new ApiException("cannot respond to this request");
+        }
+        submission.setFeedbackRequestStatus("Rejected");
+        submission.setOrganizerFeedback("Request Is Rejected");
+        submissionRepository.save(submission);
+    }
+
+    //Naelah
+    public List<String> getMyCompetitionReviews(Integer competition_id){
+        Competition competition = competitionRepository.findCompetitionById(competition_id);
+        if(competition == null){
+            throw new ApiException("competition not found");
+        }
+        List<String> reviews = new ArrayList<>();
+        for(String review : competition.getReviews()){
+            reviews.add(review);
+        }
+        return reviews;
     }
 }

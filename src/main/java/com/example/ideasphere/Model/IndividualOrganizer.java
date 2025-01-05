@@ -45,6 +45,9 @@ public class IndividualOrganizer {
     @OneToMany(mappedBy = "individualOrganizer", cascade = CascadeType.ALL)
     private Set<IndividualCompetition> individualCompetitions;
 
+    @OneToMany(mappedBy = "individualOrganizer", cascade = CascadeType.ALL)
+    private Set<MonthlySubscription> monthlySubscriptions;
+
 
 
 }

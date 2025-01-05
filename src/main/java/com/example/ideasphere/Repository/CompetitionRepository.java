@@ -17,5 +17,8 @@ public interface CompetitionRepository extends JpaRepository<Competition,Integer
     @Query("SELECT c FROM Competition c LEFT JOIN FETCH c.submissions WHERE c.endDate < :endDate AND c.status = :status")
     List<Competition> findByEndDateBeforeAndStatusWithSubmissions(@Param("endDate") LocalDate endDate, @Param("status") String status);
 
+    @Query("SELECT c FROM Competition c LEFT JOIN FETCH c.votes WHERE c.voteEndDate < :voteEndDate AND c.status = :status")
+    List<Competition> findByVoteEndDateBeforeAndStatusWithVotes(@Param("voteEndDate") LocalDate voteEndDate, @Param("status") String status);
+
     List<Competition> findCompetitionByStatus(String status);
 }

@@ -57,4 +57,7 @@ public class CompanyOrganizer {
 
     @OneToMany(cascade = CascadeType.ALL ,mappedBy = "companyOrganizer")
     private Set<CompanyCompetition> companyCompetitions;
+
+    @OneToMany(mappedBy = "companyOrganizer", cascade = CascadeType.ALL)
+    private Set<MonthlySubscription> monthlySubscriptions;
 }

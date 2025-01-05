@@ -53,6 +53,7 @@ public class SchedulerService {
             }
 
         }
+        System.out.println("updateExpiredCompetition - done");
     }
     //  Handle competitions stuck in "Winner Selection in Progress"
     public void updateStuckCompetition(){
@@ -69,9 +70,21 @@ public class SchedulerService {
 
             if (daysSinceEnd > 7) {
                 competition.setStatus("Under Voting Process");
-                competition.setEndDate(today.plusDays(3));
+                competition.setVoteEndDate(today.plusDays(3));
                 competitionRepository.save(competition);
             }
         }
+        System.out.println("updateStuckCompetition - done");
+    }
+
+    public void updateCompetitionUnderVote(){
+        LocalDate today = LocalDate.now();
+        List<Competition> VotingCompetitionsExpired = competitionRepository.findByVoteEndDateBeforeAndStatusWithVotes(today, "Under Voting Process");
+
+        for (Competition competition : VotingCompetitionsExpired) {
+
+
+        }
+
     }
 }

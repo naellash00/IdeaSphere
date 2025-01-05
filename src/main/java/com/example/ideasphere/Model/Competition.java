@@ -60,6 +60,10 @@ public class Competition {
     @Column(scale = 0 , nullable = false)
     private Integer extendNumber = 0;
 
+    @PositiveOrZero(message = "Error: extendNumber must be positive or zero")
+    private Integer countExtend = 0;
+
+
     @NotEmpty(message = "Error: status is empty")
     @Pattern(regexp = "Ongoing|Completed|Winner Selection in Progress|Under Voting Process|Waiting payment|Competition without submissions|canceled" , message = "Error: status method only Ongoing|Completed|Winner Selection in Progress|Under Voting Process|Waiting payment|Competition without submissions|canceled")
     @Column(nullable = false )
