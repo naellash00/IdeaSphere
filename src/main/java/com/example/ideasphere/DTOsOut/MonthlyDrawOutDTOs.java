@@ -27,5 +27,5 @@ public class MonthlyDrawOutDTOs {
 
     private LocalDate endDate;
 
-    private Boolean isCompleted = false;
+
 }

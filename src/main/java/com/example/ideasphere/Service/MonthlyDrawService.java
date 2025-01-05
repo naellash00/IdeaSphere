@@ -61,6 +61,7 @@ public class MonthlyDrawService {
         if (existingDraw) {
             throw new ApiException("A Monthly Draw already exists for this month.");
         }
+        monthlyDraw.setStatus("Ongoing");
 
         monthlyDrawRepository.save(monthlyDraw);
     }
@@ -82,7 +83,6 @@ public class MonthlyDrawService {
         existingMonthlyDraw.setImage(monthlyDraw.getImage());
         existingMonthlyDraw.setEndDate(monthlyDraw.getEndDate());
         existingMonthlyDraw.setRequiredPoints(monthlyDraw.getRequiredPoints());
-        existingMonthlyDraw.setIsCompleted(monthlyDraw.getIsCompleted());
 
         monthlyDrawRepository.save(existingMonthlyDraw);
     }
@@ -116,7 +116,7 @@ public class MonthlyDrawService {
                     monthlyDraw.getId(),
                     monthlyDraw.getName(),monthlyDraw.getDescription(),monthlyDraw.getPrize(),
                     monthlyDraw.getImage(),monthlyDraw.getRequiredPoints(),
-                    monthlyDraw.getCreatedAt(),monthlyDraw.getEndDate(),monthlyDraw.getIsCompleted());
+                    monthlyDraw.getCreatedAt(),monthlyDraw.getEndDate());
 
             monthlyDrawOutDTOs.add(monthlyDrawOutDTOs1);
         }
@@ -138,7 +138,7 @@ public class MonthlyDrawService {
                     monthlyDraw.getId(),
                     monthlyDraw.getName(),monthlyDraw.getDescription(),monthlyDraw.getPrize(),
                     monthlyDraw.getImage(),monthlyDraw.getRequiredPoints(),
-                    monthlyDraw.getCreatedAt(),monthlyDraw.getEndDate(),monthlyDraw.getIsCompleted());
+                    monthlyDraw.getCreatedAt(),monthlyDraw.getEndDate());
 
             monthlyDrawOutDTOs.add(monthlyDrawOutDTOs1);
         }
@@ -166,7 +166,7 @@ public class MonthlyDrawService {
                     monthlyDraw.getId(),
                     monthlyDraw.getName(),monthlyDraw.getDescription(),monthlyDraw.getPrize(),
                     monthlyDraw.getImage(),monthlyDraw.getRequiredPoints(),
-                    monthlyDraw.getCreatedAt(),monthlyDraw.getEndDate(),monthlyDraw.getIsCompleted());
+                    monthlyDraw.getCreatedAt(),monthlyDraw.getEndDate());
 
             monthlyDrawOutDTOs.add(monthlyDrawOutDTOs1);
         }

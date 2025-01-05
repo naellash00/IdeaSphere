@@ -20,7 +20,7 @@ public class MonthlyDrawParticipantController {
     @Autowired
     private MonthlyDrawParticipantService monthlyDrawParticipantService;
 
-    @GetMapping("/get")
+    @GetMapping("/get-all-monthly-draw-participants")
     public ResponseEntity<List<MonthlyDrawParticipant>> getAllMonthlyDrawParticipants(
             @AuthenticationPrincipal MyUser user) {
         return ResponseEntity.status(200).body(
@@ -33,12 +33,12 @@ public class MonthlyDrawParticipantController {
         return  ResponseEntity.status(200).body(new ApiResponse("Successfully added monthly draw participant"));
     }
 
-    @PutMapping("/assign-winner/{monthlyDrawId}")
+   /* @PutMapping("/assign-winner/{monthlyDrawId}")
     public ResponseEntity<ApiResponse> assignWinner(@AuthenticationPrincipal MyUser user,
                                                     @PathVariable Integer monthlyDrawId) {
         monthlyDrawParticipantService.assignWinner(user.getId(),monthlyDrawId);
         return ResponseEntity.status(200).body(new ApiResponse("Successfully assigned monthly draw participant"));
-    }
+    }*/
 
     // get all participants assign in Monthly Draw
     @GetMapping("/participants/{drawId}")

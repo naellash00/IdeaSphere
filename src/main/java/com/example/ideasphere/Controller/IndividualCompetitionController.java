@@ -2,6 +2,9 @@ package com.example.ideasphere.Controller;
 
 import com.example.ideasphere.ApiResponse.ApiResponse;
 import com.example.ideasphere.DTOsIN.IndividualCompetitionDTOsIN;
+import com.example.ideasphere.DTOsIN.IndividualCompetitionExtendDTOIn;
+import com.example.ideasphere.DTOsIN.IndividualCompetitionPaymentDTOIn;
+import com.example.ideasphere.DTOsIN.IndividualCompetitionUpdateDTOIn;
 import com.example.ideasphere.DTOsOut.IndividualCompetitionDTOOut;
 import com.example.ideasphere.Model.IndividualCompetition;
 import com.example.ideasphere.Model.MyUser;
@@ -46,8 +49,8 @@ public class IndividualCompetitionController {
     @PutMapping("/update")
     public ResponseEntity<ApiResponse> update(
             @AuthenticationPrincipal MyUser user,
-            @RequestBody @Valid IndividualCompetitionDTOsIN individualCompetitionDTOsIN){
-        individualCompetitionService.updateIndividualCompetition(user.getId(),individualCompetitionDTOsIN);
+            @RequestBody @Valid IndividualCompetitionUpdateDTOIn individualCompetitionUpdateDTOIn){
+        individualCompetitionService.updateIndividualCompetition(user.getId(),individualCompetitionUpdateDTOIn);
         return ResponseEntity.status(200).body(new ApiResponse("Successfully updated individualCompetition."));
     }
 
@@ -58,17 +61,20 @@ public class IndividualCompetitionController {
         return individualCompetitionService.getAllIndividualCompetitionsByStatus(user.getId(),status);
     }
 
-    //Naelah
-    @PutMapping("/select/winner/{competition_id}/{submission_id}")
-    public ResponseEntity selectWinner(@PathVariable Integer competition_id, @PathVariable Integer submission_id) {
-        individualCompetitionService.selectWinner(competition_id, submission_id);
-        return ResponseEntity.status(200).body(new ApiResponse("Winner Selected Successfully"));
+    @PostMapping("/add-competition-payment")
+    public ResponseEntity<ApiResponse> addPayment(
+            @AuthenticationPrincipal MyUser myUser,
+            @RequestBody @Valid IndividualCompetitionPaymentDTOIn individualCompetitionPaymentDTOIn){
+        individualCompetitionService.addPayment(myUser.getId(), individualCompetitionPaymentDTOIn);
+        return ResponseEntity.status(200).body(new ApiResponse("Competition added payment successfully."));
     }
 
-    //Naelah
-    @GetMapping("/get/my-competition/review/{competition_id}")
-    public ResponseEntity getMyCompetitionReviews(@AuthenticationPrincipal MyUser myUser, @PathVariable Integer competition_id) {
-        return ResponseEntity.status(200).body(individualCompetitionService.getMyCompetitionReviews(competition_id));
+    @PutMapping("/extend-competition")
+    public ResponseEntity<ApiResponse> extendCompetition(
+            @AuthenticationPrincipal MyUser myUser,
+            @RequestBody @Valid IndividualCompetitionExtendDTOIn individualCompetitionExtendDTOIn){
+        individualCompetitionService.extendCompetition(myUser.getId(), individualCompetitionExtendDTOIn);
+        return ResponseEntity.status(200).body(new ApiResponse("Competition extend successfully."));
     }
 
 

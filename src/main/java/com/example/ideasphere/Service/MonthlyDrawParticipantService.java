@@ -65,13 +65,12 @@ public class MonthlyDrawParticipantService {
         participantRepository.save(participant);
     }
 
-
+/*
     public void assignWinner(Integer userId, Integer monthlyDrawId) {
         MyUser user = authRepository.findMyUserById(userId);
         if (user == null) {
             throw new ApiException("User ID must be valid.");
         }
-
 
         MonthlyDraw monthlyDraw = monthlyDrawRepository.findMonthlyDrawById(monthlyDrawId);
         if (monthlyDraw == null) {
@@ -94,7 +93,7 @@ public class MonthlyDrawParticipantService {
         monthlyDraw.setMonthlyDrawParticipantWinner(randomParticipant.getParticipant());
         monthlyDraw.setIsCompleted(true);
         monthlyDrawRepository.save(monthlyDraw);
-    }
+    }*/
 
     public List<String> getParticipantsByDraw(Integer drawId) {
 

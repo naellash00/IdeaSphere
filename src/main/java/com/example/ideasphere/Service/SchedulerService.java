@@ -22,7 +22,9 @@ import java.util.stream.Collectors;
 public class SchedulerService {
 
     private final CompetitionRepository competitionRepository;
-
+    private final MonthlyDrawRepository monthlyDrawRepository;
+    private final  EmailSenderJava emailSender;
+    private final MonthlyDrawParticipantRepository monthlyDrawParticipantRepository;
 
 
     @Scheduled(fixedRate = 60000) // Run every minute
@@ -30,6 +32,9 @@ public class SchedulerService {
 
         updateExpiredCompetition();
         updateStuckCompetition();
+        updateCompetitionUnderVote();
+        assignMonthlyWinner();
+        checkLatePaymentCompetition();
     }
     //  Handle competitions Expired
     public void updateExpiredCompetition(){
@@ -127,5 +132,80 @@ public class SchedulerService {
 
         }
         System.out.println("updateCompetitionUnderVote - done");
+    }
+
+
+
+    // hussam
+    public void checkLatePaymentCompetition(){
+        LocalDate today = LocalDate.now();
+
+        List<Competition> pendingCompetitions = competitionRepository.findCompetitionByStatus("Waiting payment");
+
+        for (Competition competition : pendingCompetitions) {
+
+            long daysSinceEnd = ChronoUnit.DAYS.between(competition.getCreationAt(), today);
+            if (daysSinceEnd == 3) {
+                MyUser user = competition.getIndividualCompetition() != null ? competition.getIndividualCompetition().getIndividualOrganizer().getMyUser():
+                        competition.getCompanyCompetition().getCompanyOrganizer().getMyUser();
+                if (competition.getEmailSentLatePayment()) continue;
+                emailSender.sendEmail(
+                        user.getEmail(),
+                        "Reminder: Pending Payment for Competition",
+                        "<html>" +
+                                "<body style='background-color: #D4EBF8; font-size: 16px; color: #1F509A; font-family: Arial, sans-serif;'>" +
+                                "<div style='background-color: #ffffff; border: 2px solid #1F509A; padding: 20px; border-radius: 5px;'>" +
+                                "<p style='font-size: 18px; font-weight: bold; color: #0A3981;'>Dear " + user.getName() + ",</p>" +
+                                "<p>We hope this message finds you well. We would like to notify you that the payment process for the following competition is still pending from the organizers:</p>" +
+                                "<ul style='list-style-type: square; padding-left: 20px; color: #1F509A;'>" +
+                                "<li><strong>Competition Name:</strong> " + competition.getTitle() + "</li>" +
+                                "</ul>" +
+                                "<p style='color: #0A3981;'>As a result, your registration remains on hold. The organizers have been informed and are expected to complete the payment within the next <strong style='color: #E38E49;'>7 days</strong>. If the payment is not resolved within this timeframe, the competition may be canceled.</p>" +
+                                "<p>If you have any concerns or require additional information, please feel free to contact us at <a href='mailto:support@ideaSphere.com' style='color: #E38E49;'>support@ideaSphere.com</a>.</p>" +
+                                "<p style='color: #1F509A;'>We sincerely apologize for any inconvenience caused and appreciate your patience as we work to resolve this matter.</p>" +
+                                "<p style='margin-top: 20px; color: #0A3981;'>Best regards,</p>" +
+                                "<p style='font-weight: bold; color: #E38E49;'>The Idea Sphere Team</p>" +
+                                "</div>" +
+                                "</body>" +
+                                "</html>"
+                );
+
+                competition.setEmailSentLatePayment(true);
+                competitionRepository.save(competition);
+
+                // send email
+                continue;
+            }
+
+            if (daysSinceEnd > 7) {
+                competition.setStatus("canceled");
+                competitionRepository.save(competition);
+            }
+        }
+        System.out.println("checkLatePaymentCompetition - done");
+    }
+    public void assignMonthlyWinner() {
+        LocalDate today = LocalDate.now();
+
+        List<MonthlyDraw> monthlyDraws = monthlyDrawRepository.findMonthlyDrawByEndDateBeforeAndStatus(today,"Ongoing");
+
+
+        for (MonthlyDraw monthlyDraw : monthlyDraws){
+
+            // Completed|Cancel
+            List<MonthlyDrawParticipant> participants = monthlyDrawParticipantRepository.findByMonthlyDrawId(monthlyDraw.getId());
+            if (participants.isEmpty()){
+                monthlyDraw.setStatus("Cancel");
+                monthlyDrawRepository.save(monthlyDraw);
+                continue;
+            }
+            Random random = new Random();
+            int randomIndex = random.nextInt(participants.size());
+            MonthlyDrawParticipant randomParticipant = participants.get(randomIndex);
+
+            monthlyDraw.setMonthlyDrawParticipantWinner(randomParticipant.getParticipant());
+            monthlyDraw.setStatus("Completed");
+            monthlyDrawRepository.save(monthlyDraw);
+        }
     }
 }

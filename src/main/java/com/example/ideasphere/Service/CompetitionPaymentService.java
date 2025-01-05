@@ -24,4 +24,11 @@ public class CompetitionPaymentService {
 
         return competitionPaymentRepository.findCompetitionPaymentByCompetition_CompanyCompetitionId(user_id);
     }
+
+    public List<CompetitionPayment> getAllMyCompetitionPayment_Individual(Integer user_id){
+        MyUser myUser = authRepository.findMyUserById(user_id);
+        if (myUser == null) throw new ApiException("Error: user not found");
+
+        return competitionPaymentRepository.findCompetitionPaymentByCompetition_IndividualCompetitionId(user_id);
+    }
 }

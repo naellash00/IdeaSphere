@@ -21,4 +21,10 @@ public class CompetitionPaymentController {
     public ResponseEntity getAllMyCompetitionPayment(@AuthenticationPrincipal MyUser myUser){
         return ResponseEntity.ok(competitionPaymentService.getAllMyCompetitionPayment(myUser.getId()));
     }
+
+    // hussam
+    @GetMapping("/get-my-competition-payment-individual")
+    public ResponseEntity getAllMyCompetitionPayment_Individual(@AuthenticationPrincipal MyUser myUser){
+        return ResponseEntity.ok(competitionPaymentService.getAllMyCompetitionPayment_Individual(myUser.getId()));
+    }
 }

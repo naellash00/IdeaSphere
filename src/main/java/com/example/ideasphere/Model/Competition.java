@@ -69,7 +69,10 @@ public class Competition {
     @Pattern(regexp = "Ongoing|Completed|Winner Selection in Progress|Under Voting Process|Waiting payment|Competition without submissions|canceled|Vote Tie - Organizer Decision" , message = "Error: status method only Ongoing|Completed|Winner Selection in Progress|Under Voting Process|Waiting payment|Competition without submissions|canceled|Vote Tie - Organizer Decision")
     @Column(nullable = false )
     private String status;
+    @Column(nullable = false,updatable = false)
+    private LocalDate creationAt= LocalDate.now();
 
+    private Boolean emailSentLatePayment = false;
 
     @OneToOne(cascade = CascadeType.ALL,mappedBy = "competition")
     private CompanyCompetition companyCompetition;

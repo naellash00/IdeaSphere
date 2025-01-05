@@ -31,16 +31,6 @@ public class IndividualOrganizer {
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 
-    @NotEmpty(message = "Error: individual Name  is empty")
-    @Size(min = 4 ,max = 30, message = "Error: title length must more then 4 and less then 30")
-    @Column(nullable = false , unique = true)
-    private String individualName;
-
-//    @NotEmpty(message = "Error: contactPhone is empty")
-//    @Pattern(regexp = "Not Active|Active" , message = "Error: status must is Not Active or Active")
-//    @Column(nullable = false )
-//    private String status;
-
     @OneToOne
     @MapsId
     @JsonIgnore

@@ -3,6 +3,7 @@ package com.example.ideasphere.Service;
 
 import com.example.ideasphere.ApiResponse.ApiException;
 import com.example.ideasphere.DTOsIN.IndividualOrganizerDTOsIN;
+import com.example.ideasphere.DTOsOut.IndividualOrganizerDTOOut;
 import com.example.ideasphere.DTOsOut.SubmissionOutDTO;
 import com.example.ideasphere.Model.Competition;
 import com.example.ideasphere.Model.IndividualOrganizer;
@@ -32,6 +33,25 @@ public class IndividualOrganizerService {
     private final  EmailSenderJava emailSender;
 
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    public IndividualOrganizerDTOOut getMyProfile(Integer id){
+
+        MyUser myUser = authRepository.findMyUserById(id);
+        if (myUser == null) throw new ApiException("Error: user not found");
+
+        return ConvertDTOOut(myUser);
+
+    }
+    public IndividualOrganizerDTOOut ConvertDTOOut(MyUser myUser){
+        IndividualOrganizerDTOOut individualOrganizerDTOOut = new IndividualOrganizerDTOOut();
+        individualOrganizerDTOOut.setId(myUser.getId());
+        individualOrganizerDTOOut.setUsername(myUser.getUsername());
+        individualOrganizerDTOOut.setName(myUser.getName());
+        individualOrganizerDTOOut.setEmail(myUser.getEmail());
+        individualOrganizerDTOOut.setRole(myUser.getRole());;
+        individualOrganizerDTOOut.setPhoneNumber(myUser.getIndividualOrganizer().getPhoneNumber());
+
+        return individualOrganizerDTOOut;
+    }
 
 
     // register Individual Organizer user
@@ -82,28 +102,33 @@ public class IndividualOrganizerService {
     }
 
 
-    public void send_inquiry(Integer userId, String subject, String text) {
+    public void sendComplain(Integer userId, String subject, String text) {
         MyUser user = authRepository.findMyUserById(userId);
         if (user == null) {
             throw new ApiException("User not found");
         }
         emailSender.sendEmail(
                 "alsaedihussam449@gmail.com",
-                subject,
+                "Complaint Submission",
                 "<html>" +
-                        "<body style='background-color: green; font-size: 18px; color: white;'>" +
-                        "<div style='background-color: white; border: 4px solid green; padding: 10px; color: black;'>" +
-                        "<ul style='list-style-type: square; padding-left: 20px;'>" +
-                        "<li><strong>Inquirer's Name:</strong> " + user.getName() + "</li>" +
-                        "<li><strong>Inquirer's Email:</strong> " + user.getEmail() + "</li>" +
-                        "<li><strong>Message:</strong> " + text + "</li>" +
+                        "<body style='background-color: #D4EBF8; font-size: 16px; color: #1F509A; font-family: Arial, sans-serif;'>" +
+                        "<div style='background-color: #ffffff; border: 2px solid #1F509A; padding: 20px; border-radius: 5px;'>" +
+                        "<p style='font-size: 18px; font-weight: bold; color: #0A3981;'>Complaint Submission</p>" +
+                        "<p>Dear Support Team,</p>" +
+                        "<p>A new complaint has been submitted with the following details:</p>" +
+                        "<ul style='list-style-type: square; padding-left: 20px; color: #1F509A;'>" +
+                        "<li><strong>Complainant's Name:</strong> " + user.getName() + "</li>" +
+                        "<li><strong>Complainant's Email:</strong> " + user.getEmail() + "</li>" +
+                        "<li><strong>Complaint Subject:</strong> " + subject + "</li>" +
+                        "<li><strong>Complaint Message:</strong> " + text + "</li>" +
                         "</ul>" +
+                        "<p style='color: #0A3981;'>Please review the complaint and address it at your earliest convenience. If you require any further details, feel free to reach out to the complainant.</p>" +
+                        "<p style='margin-top: 20px; color: #0A3981;'>Best regards,</p>" +
+                        "<p style='font-weight: bold; color: #E38E49;'>The Idea Sphere Team</p>" +
                         "</div>" +
                         "</body>" +
                         "</html>"
         );
-
-
     }
 
 }

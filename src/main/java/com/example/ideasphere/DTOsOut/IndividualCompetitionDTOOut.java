@@ -24,7 +24,7 @@ public class IndividualCompetitionDTOOut {
     private String status;
     private Set<String> categories;
 
-
     private  Double  monetaryReward;
-    private String individualName;
+    private String individualOrganizerName;
+
 }

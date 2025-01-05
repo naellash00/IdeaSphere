@@ -25,7 +25,7 @@ public class MonthlyDrawController {
     private final MonthlyDrawService monthlyDrawService;
 
 
-    @GetMapping("/get")
+    @GetMapping("/get-all-monthly-draws")
     public ResponseEntity<List<MonthlyDraw>> getAllMonthlyDraws(@AuthenticationPrincipal MyUser user){
         return ResponseEntity.ok(monthlyDrawService.findAllMonthlyDraws(user.getId()));
     }

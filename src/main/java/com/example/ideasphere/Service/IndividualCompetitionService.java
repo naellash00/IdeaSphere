@@ -14,6 +14,21 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import com.example.ideasphere.ApiResponse.ApiException;
+import com.example.ideasphere.DTOsIN.*;
+import com.example.ideasphere.DTOsOut.IndividualCompetitionDTOOut;
+import com.example.ideasphere.Model.*;
+import com.example.ideasphere.Repository.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,9 +47,7 @@ public class IndividualCompetitionService {
     private final WinnerPaymentService winnerPaymentService;
     private final WinnerPaymentRepository winnerPaymentRepository;
 
-
-
-
+    private final CompetitionPaymentRepository competitionPaymentRepository;
 
     public List<IndividualCompetitionDTOOut> getAllIndividualCompetitions() {
         List<IndividualCompetition> individualCompetitions = individualCompetitionRepository.findAll();
@@ -63,7 +76,7 @@ public class IndividualCompetitionService {
                             : Collections.emptySet()
             );
             dto.setMonetaryReward(individualCompetition.getMonetaryReward());
-            dto.setIndividualName(individualCompetition.getIndividualOrganizer().getIndividualName());
+
 
             return dto;
         }).collect(Collectors.toList());
@@ -105,7 +118,7 @@ public class IndividualCompetitionService {
                                     : Collections.emptySet()
                     );
                     dto.setMonetaryReward(individualCompetition.getMonetaryReward());
-                    dto.setIndividualName(individualCompetition.getIndividualOrganizer().getIndividualName());
+
 
                     return dto;
                 })
@@ -122,6 +135,10 @@ public class IndividualCompetitionService {
     }*/
 
     public List<IndividualCompetitionDTOOut> getMyCompetition(Integer user_id){
+        MyUser user = authRepository.findMyUserById(user_id);
+        if (user == null){
+            throw new ApiException("user not found");
+        }
         List<IndividualCompetition> individualCompetitions = individualCompetitionRepository.findIndividualCompetitionByCompetition_Id(user_id);
 
         if (individualCompetitions.isEmpty()) {
@@ -148,7 +165,7 @@ public class IndividualCompetitionService {
                             : Collections.emptySet()
             );
             dto.setMonetaryReward(individualCompetition.getMonetaryReward());
-            dto.setIndividualName(individualCompetition.getIndividualOrganizer().getIndividualName());
+            dto.setIndividualOrganizerName(user.getName());
 
             return dto;
         }).collect(Collectors.toList());
@@ -167,10 +184,14 @@ public class IndividualCompetitionService {
         competition.setDescription(individualCompetitionDTOsIN.getDescription());
         competition.setVotingMethod(individualCompetitionDTOsIN.getVotingMethod());
         competition.setCompetitionImage(individualCompetitionDTOsIN.getCompetitionImage());
+        if (individualCompetitionDTOsIN.getVotingMethod().equalsIgnoreCase("By Organizer")){
+            individualCompetitionDTOsIN.setVoteEndDate(null);
+        }
         competition.setVoteEndDate(individualCompetitionDTOsIN.getVoteEndDate());
         competition.setEndDate(individualCompetitionDTOsIN.getEndDate());
         competition.setMaxParticipants(individualCompetitionDTOsIN.getMaxParticipants());
         competition.setStatus("Waiting payment");
+
 
         if (individualCompetitionDTOsIN.getCategories().isEmpty()){
             throw new ApiException("Competition must be have at lest one or more category ");
@@ -188,53 +209,47 @@ public class IndividualCompetitionService {
 
         IndividualCompetition individualCompetition = new IndividualCompetition();
         individualCompetition.setMonetaryReward(individualCompetitionDTOsIN.getMonetaryReward());
+        individualCompetition.setIndividualOrganizer(user.getIndividualOrganizer());
         individualCompetition.setCompetition(competition);
 
         individualCompetitionRepository.save(individualCompetition);
     }
 
-    public void updateIndividualCompetition(Integer userId, IndividualCompetitionDTOsIN individualCompetitionDTOsIN) {
-        MyUser user = authRepository.findMyUserById(userId);
-        if (user == null) {
-            throw new ApiException("User not found");
-        }
+    public void updateIndividualCompetition(Integer user_id , IndividualCompetitionUpdateDTOIn individualCompetitionUpdateDTOIn){
+        MyUser myUser = authRepository.findMyUserById(user_id);
 
-        Competition existingCompetition = competitionRepository.findCompetitionById(individualCompetitionDTOsIN.getIndividualCompetitionId());
-        if (existingCompetition == null) {
-            throw new ApiException("Competition not found");
-        }
+        if (myUser == null) throw new ApiException("Error: user not found");
 
-        existingCompetition.setTitle(individualCompetitionDTOsIN.getTitle());
-        existingCompetition.setDescription(individualCompetitionDTOsIN.getDescription());
-        existingCompetition.setVotingMethod(individualCompetitionDTOsIN.getVotingMethod());
-        existingCompetition.setCompetitionImage(individualCompetitionDTOsIN.getCompetitionImage());
-        existingCompetition.setVoteEndDate(individualCompetitionDTOsIN.getVoteEndDate());
-        existingCompetition.setEndDate(individualCompetitionDTOsIN.getEndDate());
-        existingCompetition.setMaxParticipants(individualCompetitionDTOsIN.getMaxParticipants());
+        IndividualCompetition individualCompetition = individualCompetitionRepository.findIndividualCompetitionById(individualCompetitionUpdateDTOIn.getId());
 
-        if (individualCompetitionDTOsIN.getCategories().isEmpty()) {
-            throw new ApiException("Competition must have at least one category.");
-        }
+        if (individualCompetition == null) throw new ApiException("Error: individual Competition not found");
 
-        for (Category c : individualCompetitionDTOsIN.getCategories()) {
-            Category category = categoryRepository.findCategoryById(c.getId());
-            if (category == null) {
-                throw new ApiException("Category not found with id " + c.getId());
-            }
-        }
+        if (!myUser.getCompanyOrganizer().getId().equals(individualCompetition.getIndividualOrganizer().getId())) throw new ApiException("Error: this Competition not belong to you");
 
-        existingCompetition.setCategories(individualCompetitionDTOsIN.getCategories());
-        competitionRepository.save(existingCompetition);
+        String status =  individualCompetition.getCompetition().getStatus();
+        // check status
+        if (!status.equalsIgnoreCase("Ongoing")) throw new ApiException("Error: the Competition status is ("+status+") you can't extend the Competition");
 
-        IndividualCompetition existingIndividualCompetition = individualCompetitionRepository.findIndividualCompetitionById(existingCompetition.getId());
-        if (existingIndividualCompetition == null) {
-            throw new ApiException("Individual Competition not found.");
-        }
-        existingIndividualCompetition.setMonetaryReward(individualCompetitionDTOsIN.getMonetaryReward());
-        existingIndividualCompetition.setCompetition(existingCompetition);
-        individualCompetitionRepository.save(existingIndividualCompetition);
+        // check category
+        checkCategoryExist(individualCompetitionUpdateDTOIn.getCategories());
+
+        Competition competition = individualCompetition.getCompetition();
+
+
+        competition.setTitle(individualCompetitionUpdateDTOIn.getTitle());
+        competition.setDescription(individualCompetitionUpdateDTOIn.getDescription());
+        competition.setCompetitionImage(individualCompetitionUpdateDTOIn.getCompetitionImage());
+        competition.setCategories(individualCompetitionUpdateDTOIn.getCategories());
+
+        competitionRepository.save(competition);
     }
 
+    public void checkCategoryExist(Set<Category> categories){
+        for(Category category : categories){
+            Category findCategory = categoryRepository.findCategoryById(category.getId());
+            if (findCategory == null )throw new ApiException("Error: category not found ");
+        }
+    }
 
     public List<IndividualCompetition> getCompetitionsByStatus(Integer userId, String status) {
         MyUser user = authRepository.findMyUserById(userId);
@@ -260,7 +275,122 @@ public class IndividualCompetitionService {
                 competition.getStatus(),
                 competition.getCategories().stream().map(Category::getCategoryName).collect(Collectors.toSet()),
                 individualCompetition.getMonetaryReward(),
-                individualCompetition.getIndividualOrganizer().getIndividualName()
+                competition.getIndividualCompetition().getIndividualOrganizer().getMyUser().getName()
+
         );
+    }
+
+
+    public void addPayment(Integer user_id, IndividualCompetitionPaymentDTOIn CompetitionPaymentDTOIn) {
+        MyUser myUser = authRepository.findMyUserById(user_id);
+        if (myUser == null) throw new ApiException("Error :user not found");
+
+        IndividualCompetition individualCompetition = individualCompetitionRepository.findIndividualCompetitionById(CompetitionPaymentDTOIn.getIndividualCompetitionId());
+
+        if (individualCompetition == null) throw new ApiException("Error: individualCompetition not found");
+
+        if ( !individualCompetition.getIndividualOrganizer().getId().equals(myUser.getId())) throw new ApiException("Error: this competition not belong to you, you can't make payment.");
+
+        if (!individualCompetition.getCompetition().getStatus().equalsIgnoreCase("Waiting payment")) throw new ApiException("Error: the Competition status is ("+individualCompetition.getCompetition().getStatus()+"), you can't make payment");
+
+        CompetitionPayment duplicatedPayment = competitionPaymentRepository.findCompetitionPaymentByCompetitionId(individualCompetition.getCompetition().getId());
+
+        if (duplicatedPayment != null ) throw new ApiException("Error: payment already created");
+
+        CompetitionPayment competitionPayment = new CompetitionPayment();
+
+        competitionPayment.setPaymentMethod(CompetitionPaymentDTOIn.getPaymentMethod());
+        competitionPayment.setPaymentStatus("Completed");
+        competitionPayment.setAmount(individualCompetition.getMonetaryReward());
+        competitionPayment.setCompetition(individualCompetition.getCompetition());
+
+        competitionPaymentRepository.save(competitionPayment);
+
+        Competition competition = individualCompetition.getCompetition();
+        competition.setStatus("Ongoing");
+        competitionRepository.save(competition);
+    }
+
+    public void extendCompetition(Integer user_id , IndividualCompetitionExtendDTOIn individualCompetitionExtendDTOIn  ){
+        MyUser myUser = authRepository.findMyUserById(user_id);
+
+        if (myUser == null) throw new ApiException("Error: user not found");
+
+        IndividualCompetition individualCompetition = individualCompetitionRepository.findIndividualCompetitionById(individualCompetitionExtendDTOIn.getId());
+
+        if (individualCompetition == null) throw new ApiException("Error: IndividualCompetition not found");
+
+        if (!myUser.getIndividualOrganizer().getId().equals(individualCompetition.getIndividualOrganizer().getId())) throw new ApiException("Error: this Competition not belong to you");
+
+
+        String status =  individualCompetition.getCompetition().getStatus();
+        // check status
+        if (status.equalsIgnoreCase("Completed")
+                || status.equalsIgnoreCase("Waiting payment" )
+                || status.equalsIgnoreCase("canceled" )) throw new ApiException("Error: the Competition status is ("+status+") you can't extend the Competition") ;
+
+        Competition competition = individualCompetition.getCompetition();
+
+        if (competition.getCountExtend() >=3) throw new ApiException("Error: you have the maximum extending of the competition ");
+
+        if (competition.getVotingMethod().equalsIgnoreCase("By Organizer")){
+            individualCompetitionExtendDTOIn.setVoteEndDate(null);
+        }
+
+        // check dates
+        checkEndDateAndVoteEndDate(individualCompetition.getCompetition().getEndDate(), individualCompetitionExtendDTOIn.getEndDate(), individualCompetitionExtendDTOIn.getVoteEndDate());
+
+        // check the competition have max Participant and make sure organizer increase Participant if he wants extend
+        if (competition.getSubmissions().size() >= competition.getMaxParticipants() && individualCompetitionExtendDTOIn.getIncreaseParticipants() == 0) throw new ApiException("Error: competition have max Participant you must increase Participant if you want extend ");
+
+
+        competition.setEndDate(individualCompetitionExtendDTOIn.getEndDate());
+        competition.setVoteEndDate(individualCompetitionExtendDTOIn.getVoteEndDate());
+        competition.setMaxParticipants(competition.getMaxParticipants() + individualCompetitionExtendDTOIn.getIncreaseParticipants());
+        competition.setStatus("Ongoing");
+        competition.setCountExtend(competition.getCountExtend()+1);
+
+        competitionRepository.save(competition);
+    }
+    public void checkEndDateAndVoteEndDate(LocalDate endDate, LocalDate voteEndDate) {
+        LocalDate today = LocalDate.now();
+
+        // Check EndDate conditions
+        if (endDate.isBefore(today) || endDate.isEqual(today)) {
+            throw new ApiException("Error: EndDate must be in the future and not today.");
+        }
+        if (endDate.isAfter(today.plusDays(30))) {
+            throw new ApiException("Error: EndDate cannot be more than 30 days from today.");
+        }
+
+        // If VoteEndDate is provided, check its conditions
+        if (voteEndDate != null) {
+            if (voteEndDate.isBefore(endDate) || voteEndDate.isEqual(endDate)) {
+                throw new ApiException("Error: VoteEndDate must be after EndDate.");
+            }
+            if (voteEndDate.isAfter(endDate.plusDays(7))) {
+                throw new ApiException("Error: VoteEndDate cannot be more than 7 days after EndDate.");
+            }
+        }
+    }
+    public void checkEndDateAndVoteEndDate(LocalDate oldEndDate, LocalDate endDate, LocalDate voteEndDate) {
+
+        // Check EndDate conditions
+        if (endDate.isBefore(oldEndDate) || endDate.isEqual(oldEndDate)) {
+            throw new ApiException("Error: EndDate must be in the future and not equal oldEndDate.");
+        }
+        if (endDate.isAfter(oldEndDate.plusDays(30))) {
+            throw new ApiException("Error: EndDate cannot be more than 30 days from oldEndDate.");
+        }
+
+        // If VoteEndDate is provided, check its conditions
+        if (voteEndDate != null) {
+            if (voteEndDate.isBefore(endDate) || voteEndDate.isEqual(endDate)) {
+                throw new ApiException("Error: VoteEndDate must be after EndDate.");
+            }
+            if (voteEndDate.isAfter(endDate.plusDays(7))) {
+                throw new ApiException("Error: VoteEndDate cannot be more than 7 days after EndDate.");
+            }
+        }
     }
 }
