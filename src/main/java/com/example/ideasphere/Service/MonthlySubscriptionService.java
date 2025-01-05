@@ -39,8 +39,13 @@ public class MonthlySubscriptionService {
 
     public void subscribe(Integer userid , Integer SubscriptionPackageId){
 
+
         MyUser myUser = authRepository.findMyUserById(userid);
         if (myUser == null) throw new ApiException("Error: user not found");
+
+        if (myUser.getCompanyOrganizer() != null){
+            if (myUser.getCompanyOrganizer().getStatus().equalsIgnoreCase("Not Active")) throw new ApiException("Error: CompanyOrganizer user not active");
+        }
 
         SubscriptionPackage subscriptionPackage = subscriptionPackageRepository.findSubscriptionPackageById(SubscriptionPackageId);
 
@@ -82,6 +87,10 @@ public class MonthlySubscriptionService {
     public void renewSubscribe(Integer userid , Integer SubscriptionPackageId){
         MyUser myUser = authRepository.findMyUserById(userid);
         if (myUser == null) throw new ApiException("Error: user not found");
+
+        if (myUser.getCompanyOrganizer() != null){
+            if (myUser.getCompanyOrganizer().getStatus().equalsIgnoreCase("Not Active")) throw new ApiException("Error: CompanyOrganizer user not active");
+        }
 
         SubscriptionPackage subscriptionPackage = subscriptionPackageRepository.findSubscriptionPackageById(SubscriptionPackageId);
 

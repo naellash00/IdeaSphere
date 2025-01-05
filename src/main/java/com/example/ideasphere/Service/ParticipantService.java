@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -53,13 +54,22 @@ public class ParticipantService { // Naelah
         user.setEmail(participantInDTO.getEmail());
         user.setCreatedAt(LocalDateTime.now());
 
+        // check Category Exist
+        checkCategoryExist(participantInDTO.getCategories());
+
         participant.setUser(user);
+        participant.setCategories(participantInDTO.getCategories());
         participant.setBankAccountNumber(participantInDTO.getBankAccountNumber());
 
         authRepository.save(user);
         participantRepository.save(participant);
     }
-
+    public void checkCategoryExist(Set<Category> categories){
+        for(Category category : categories){
+            Category findCategory = categoryRepository.findCategoryById(category.getId());
+            if (findCategory == null )throw new ApiException("Error: category not found ");
+        }
+    }
     public void updateParticipant(Integer id, ParticipantInDTO participantInDTO) {
         MyUser user = authRepository.findMyUserById(id);
         Participant oldParticipant = participantRepository.findParticipantById(id);

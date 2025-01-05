@@ -68,7 +68,7 @@ public class CompanyCompetitionController {
             @AuthenticationPrincipal MyUser myUser,
             @RequestBody @Valid CompanyCompetitionPaymentDTOIn competitionPaymentDTOIn){
         companyCompetitionService.addPayment(myUser.getId(), competitionPaymentDTOIn);
-        return ResponseEntity.status(200).body(new ApiResponse("Competition added payment successfully."));
+        return ResponseEntity.status(200).body(new ApiResponse("Competition Payment Completed Successfully."));
     }
 
     @PutMapping("/extend-competition")

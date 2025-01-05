@@ -47,7 +47,7 @@ public class MyUser implements UserDetails { // Naelah
     private String role;
 
     @Column(columnDefinition = "timestamp")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn

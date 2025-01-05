@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -55,7 +56,10 @@ public class MonthlyDraw {
     private LocalDate endDate;
 
     @Column(nullable = true)
-    private Boolean isCompleted = false;
+  //  private Boolean isCompleted = false;
+
+    @Pattern(regexp = "Ongoing|Completed|Cancel")
+    private String status = "Ongoing";
 
     @ManyToOne
     @JsonIgnore

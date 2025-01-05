@@ -15,12 +15,6 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
     private final AdminService adminService;
 
-    @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid AdminInDTO adminInDTO){
-        adminService.register(adminInDTO);
-        return ResponseEntity.status(200).body(new ApiResponse("Admin Registered Successfully"));
-    }
-
 
     @PutMapping("/active-company-user/{id}")
     public ResponseEntity active(@PathVariable Integer id){

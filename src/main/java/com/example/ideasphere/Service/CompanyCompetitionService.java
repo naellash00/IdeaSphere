@@ -315,6 +315,8 @@ public class CompanyCompetitionService {
     public CompanyCompetitionDTOOut ConvertDTO(CompanyCompetition companyCompetition) {
         Competition competition = companyCompetition.getCompetition();
 
+        String participantWinnerName = competition.getParticipantWinner() != null? competition.getParticipantWinner().getUser().getName(): null;
+
         return new CompanyCompetitionDTOOut(
                 competition.getId(),
                 competition.getTitle(),
@@ -327,6 +329,7 @@ public class CompanyCompetitionService {
                 competition.getCountExtend(),
                 competition.getStatus(),
                 competition.getCategories().stream().map(Category::getCategoryName).collect(Collectors.toSet()),
+                participantWinnerName,
                 companyCompetition.getRewardType(),
                 companyCompetition.getMonetaryReward(),
                 companyCompetition.getCompanyOrganizer().getCompanyName()

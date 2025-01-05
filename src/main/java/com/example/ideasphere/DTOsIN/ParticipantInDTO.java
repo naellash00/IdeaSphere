@@ -1,12 +1,12 @@
 package com.example.ideasphere.DTOsIN;
 
+import com.example.ideasphere.Model.Category;
 import jakarta.persistence.Column;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -32,4 +32,7 @@ public class ParticipantInDTO {
     @NotEmpty(message = "Bank Number Cannot Be Empty")
     @Pattern(regexp = "^SA[0-9]{2}[0-9]{18}$", message = "Invalid Bank Account Number")
     private String BankAccountNumber;
+
+    @NotNull(message = "Error : category is empty must at least one or more")
+    Set<Category> categories;
 }

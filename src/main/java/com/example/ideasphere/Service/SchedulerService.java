@@ -1,7 +1,10 @@
 package com.example.ideasphere.Service;
 
-import com.example.ideasphere.Model.Competition;
+import com.example.ideasphere.ApiResponse.ApiException;
+import com.example.ideasphere.Model.*;
 import com.example.ideasphere.Repository.CompetitionRepository;
+import com.example.ideasphere.Repository.MonthlyDrawParticipantRepository;
+import com.example.ideasphere.Repository.MonthlyDrawRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -9,6 +12,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -84,7 +91,41 @@ public class SchedulerService {
         for (Competition competition : VotingCompetitionsExpired) {
 
 
-        }
+            Map<Submission, Long> voteCountMap = competition.getVotes().stream()
+                    .collect(Collectors.groupingBy(Vote::getSubmission, Collectors.counting()));
 
+            if (voteCountMap.isEmpty()) {
+                competition.setVoteEndDate(today.plusDays(3));
+                competitionRepository.save(competition);
+                continue;
+            }
+
+            // Find the maximum vote count
+            long maxVotes = voteCountMap.values().stream().max(Long::compareTo).orElse(0L);
+
+            // Get submissions with the maximum vote count (could be more than one in case of tie)
+            List<Submission> topSubmissions = voteCountMap.entrySet().stream()
+                    .filter(entry -> entry.getValue() == maxVotes)
+                    .map(Map.Entry::getKey)
+                    .toList();
+
+            if (topSubmissions.size() > 1) {
+                // Tie detected
+                competition.setStatus("Vote Tie - Organizer Decision");
+                for (Submission s : topSubmissions){
+                    s.setWinnerEqualedVotes(true);
+                }
+                competitionRepository.save(competition);
+            } else {
+                // Single winner
+                Submission submission = topSubmissions.get(0);
+                competition.setStatus("Completed");
+                competition.setParticipantWinner(submission.getParticipant());
+                competitionRepository.save(competition);
+            }
+
+
+        }
+        System.out.println("updateCompetitionUnderVote - done");
     }
 }

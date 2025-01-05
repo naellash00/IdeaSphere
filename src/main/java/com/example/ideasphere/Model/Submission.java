@@ -39,6 +39,9 @@ public class Submission {
     @Column(columnDefinition = "text not null")
     private String description;
 
+
+    private Boolean winnerEqualedVotes = false;
+
     @Column(columnDefinition = "timestamp")
     private LocalDateTime submittedAt;
 

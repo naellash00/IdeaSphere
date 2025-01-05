@@ -4,6 +4,7 @@ import com.example.ideasphere.ApiResponse.ApiException;
 import com.example.ideasphere.Model.Participant;
 import com.example.ideasphere.Model.Submission;
 import com.example.ideasphere.Model.Vote;
+import com.example.ideasphere.Repository.CompetitionRepository;
 import com.example.ideasphere.Repository.ParticipantRepository;
 import com.example.ideasphere.Repository.SubmissionRepository;
 import com.example.ideasphere.Repository.VoteRepository;
@@ -18,6 +19,7 @@ public class VoteService { // naelah
     private final VoteRepository voteRepository;
     private final ParticipantRepository participantRepository;
     private final SubmissionRepository submissionRepository;
+    private final CompetitionRepository competitionRepository;
 
     public void vote(Integer voter_id, Integer submission_id) {
         Participant voter = participantRepository.findParticipantById(voter_id);

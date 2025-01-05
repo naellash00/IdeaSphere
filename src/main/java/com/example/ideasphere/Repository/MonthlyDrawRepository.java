@@ -27,6 +27,8 @@ public interface MonthlyDrawRepository extends JpaRepository<MonthlyDraw, Intege
 
     List<MonthlyDraw> findByEndDateBetween(LocalDate startDate, LocalDate endDate);
 
-    @Query("SELECT m FROM MonthlyDraw m WHERE m.requiredPoints <= :points and m.isCompleted= false ")
+    @Query("SELECT m FROM MonthlyDraw m WHERE m.requiredPoints <= :points and m.status= 'Ongoing' ")
     List<MonthlyDraw> findByPointsLessThanEqual(@Param("points") Integer points);
+
+    List<MonthlyDraw> findMonthlyDrawByEndDateBeforeAndStatus(LocalDate date , String status);
 }

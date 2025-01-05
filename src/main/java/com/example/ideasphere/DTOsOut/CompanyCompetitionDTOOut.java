@@ -23,6 +23,7 @@ public class CompanyCompetitionDTOOut {
     private Integer countExtend ;
     private String status;
     private Set<String> categories;
+    private String winnerName;
 
     // CompanyCompetition fields
     private String rewardType;
