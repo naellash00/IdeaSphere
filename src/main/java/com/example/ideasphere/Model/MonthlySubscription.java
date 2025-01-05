@@ -35,5 +35,5 @@ public class MonthlySubscription {
 
     @ManyToOne
     @JsonIgnore
-    private SubscriptionPackages subscriptionPackages;
+    private SubscriptionPackage subscriptionPackage;
 }
