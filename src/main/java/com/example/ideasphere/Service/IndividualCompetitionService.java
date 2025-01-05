@@ -4,6 +4,7 @@ package com.example.ideasphere.Service;
 import com.example.ideasphere.ApiResponse.ApiException;
 import com.example.ideasphere.DTOsIN.IndividualCompetitionDTOsIN;
 import com.example.ideasphere.DTOsIN.IndividualOrganizerDTOsIN;
+import com.example.ideasphere.DTOsOut.IndividualCompetitionDTOOut;
 import com.example.ideasphere.Model.*;
 import com.example.ideasphere.Repository.*;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +35,127 @@ public class IndividualCompetitionService {
     private final WinnerPaymentRepository winnerPaymentRepository;
 
 
-    public  List<IndividualCompetition> findAllIndividualCompetitions(Integer userId){
+
+
+
+    public List<IndividualCompetitionDTOOut> getAllIndividualCompetitions() {
+        List<IndividualCompetition> individualCompetitions = individualCompetitionRepository.findAll();
+
+        if (individualCompetitions.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return individualCompetitions.stream().map(individualCompetition -> {
+            Competition competition = individualCompetition.getCompetition();
+            IndividualCompetitionDTOOut dto = new IndividualCompetitionDTOOut();
+
+
+            dto.setCompetitionId(competition.getId());
+            dto.setTitle(competition.getTitle());
+            dto.setDescription(competition.getDescription());
+            dto.setVotingMethod(competition.getVotingMethod());
+            dto.setCompetitionImage(competition.getCompetitionImage());
+            dto.setVoteEndDate(competition.getVoteEndDate());
+            dto.setEndDate(competition.getEndDate());
+            dto.setMaxParticipants(competition.getMaxParticipants());
+            dto.setStatus(competition.getStatus());
+            dto.setCategories(
+                    competition.getCategories() != null
+                            ? competition.getCategories().stream().map(Category::getCategoryName).collect(Collectors.toSet())
+                            : Collections.emptySet()
+            );
+            dto.setMonetaryReward(individualCompetition.getMonetaryReward());
+            dto.setIndividualName(individualCompetition.getIndividualOrganizer().getIndividualName());
+
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    public List<IndividualCompetitionDTOOut> getAllIndividualCompetitionsByStatus(Integer userId, String status) {
         MyUser user = authRepository.findMyUserById(userId);
-        if (userId == null){
+        if (user == null){
             throw new ApiException("user not found");
         }
-        return  individualCompetitionRepository.findAll();
+
+        List<IndividualCompetition> individualCompetitions = individualCompetitionRepository.findAll();
+
+        if (individualCompetitions.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return individualCompetitions.stream()
+                .filter(individualCompetition ->
+                        status.equalsIgnoreCase(individualCompetition.getCompetition().getStatus()))
+                .map(individualCompetition -> {
+                    Competition competition = individualCompetition.getCompetition();
+                    IndividualCompetitionDTOOut dto = new IndividualCompetitionDTOOut();
+
+                    dto.setCompetitionId(competition.getId());
+                    dto.setTitle(competition.getTitle());
+                    dto.setDescription(competition.getDescription());
+                    dto.setVotingMethod(competition.getVotingMethod());
+                    dto.setCompetitionImage(competition.getCompetitionImage());
+                    dto.setVoteEndDate(competition.getVoteEndDate());
+                    dto.setEndDate(competition.getEndDate());
+                    dto.setMaxParticipants(competition.getMaxParticipants());
+                    dto.setStatus(competition.getStatus());
+                    dto.setCategories(
+                            competition.getCategories() != null
+                                    ? competition.getCategories().stream()
+                                    .map(Category::getCategoryName)
+                                    .collect(Collectors.toSet())
+                                    : Collections.emptySet()
+                    );
+                    dto.setMonetaryReward(individualCompetition.getMonetaryReward());
+                    dto.setIndividualName(individualCompetition.getIndividualOrganizer().getIndividualName());
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
+
+
+  /*  public List<IndividualCompetitionDTOOut> getAllIndividualCompetition(){
+        List<IndividualCompetition> individualCompetitions = individualCompetitionRepository.findAll();
+
+        return individualCompetitions.stream()
+                .map(this::ConvertDTO)
+                .collect(Collectors.toList());
+    }*/
+
+    public List<IndividualCompetitionDTOOut> getMyCompetition(Integer user_id){
+        List<IndividualCompetition> individualCompetitions = individualCompetitionRepository.findIndividualCompetitionByCompetition_Id(user_id);
+
+        if (individualCompetitions.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return individualCompetitions.stream().map(individualCompetition -> {
+            Competition competition = individualCompetition.getCompetition();
+            IndividualCompetitionDTOOut dto = new IndividualCompetitionDTOOut();
+
+
+            dto.setCompetitionId(competition.getId());
+            dto.setTitle(competition.getTitle());
+            dto.setDescription(competition.getDescription());
+            dto.setVotingMethod(competition.getVotingMethod());
+            dto.setCompetitionImage(competition.getCompetitionImage());
+            dto.setVoteEndDate(competition.getVoteEndDate());
+            dto.setEndDate(competition.getEndDate());
+            dto.setMaxParticipants(competition.getMaxParticipants());
+            dto.setStatus(competition.getStatus());
+            dto.setCategories(
+                    competition.getCategories() != null
+                            ? competition.getCategories().stream().map(Category::getCategoryName).collect(Collectors.toSet())
+                            : Collections.emptySet()
+            );
+            dto.setMonetaryReward(individualCompetition.getMonetaryReward());
+            dto.setIndividualName(individualCompetition.getIndividualOrganizer().getIndividualName());
+
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
 
     public void addIndividualCompetition(Integer userId, IndividualCompetitionDTOsIN individualCompetitionDTOsIN){
 
@@ -120,6 +235,35 @@ public class IndividualCompetitionService {
         existingIndividualCompetition.setMonetaryReward(individualCompetitionDTOsIN.getMonetaryReward());
         existingIndividualCompetition.setCompetition(existingCompetition);
         individualCompetitionRepository.save(existingIndividualCompetition);
+    }
+
+
+    public List<IndividualCompetition> getCompetitionsByStatus(Integer userId, String status) {
+        MyUser user = authRepository.findMyUserById(userId);
+        if (user == null) {
+            throw new ApiException("User not found");
+        }
+
+        return individualCompetitionRepository.findByStatusAndUserId(status, user.getId());
+    }
+
+    public IndividualCompetitionDTOOut ConvertDTO(IndividualCompetition individualCompetition) {
+        Competition competition = individualCompetition.getCompetition();
+
+        return new IndividualCompetitionDTOOut(
+                competition.getId(),
+                competition.getTitle(),
+                competition.getDescription(),
+                competition.getVotingMethod(),
+                competition.getCompetitionImage(),
+                competition.getVoteEndDate(),
+                competition.getEndDate(),
+                competition.getMaxParticipants(),
+                competition.getStatus(),
+                competition.getCategories().stream().map(Category::getCategoryName).collect(Collectors.toSet()),
+                individualCompetition.getMonetaryReward(),
+                individualCompetition.getIndividualOrganizer().getIndividualName()
+        );
     }
 
     // Naelah

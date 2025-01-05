@@ -29,6 +29,8 @@ public class IndividualOrganizerService {
     private final AuthRepository authRepository;
     private final CompetitionRepository competitionRepository;
 
+    private final  EmailSenderJava emailSender;
+
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
@@ -80,33 +82,29 @@ public class IndividualOrganizerService {
     }
 
 
-//    public void activeIndividual(Integer id){
-//
-//        IndividualOrganizer individualOrganizer = individualOrganizerRepository.findIndividualOrganizerById(id);
-//        if (individualOrganizer == null) {
-//            throw new ApiException("Error :  Individual Organizer not found");
-//        }
-//        if (individualOrganizer.getStatus().equalsIgnoreCase("Active")) throw new ApiException("Error: Individual already Active");
-//
-//        individualOrganizer.setStatus("Active");
-//
-//        individualOrganizerRepository.save(individualOrganizer);
-//    }
-//
-//
-//    public void detectiveIndividual(Integer id){
-//
-//        IndividualOrganizer individualOrganizer = individualOrganizerRepository.findIndividualOrganizerById(id);
-//        if (individualOrganizer == null) {
-//            throw new ApiException("Error :  Individual Organizer not found");
-//        }
-//        if (individualOrganizer.getStatus().equalsIgnoreCase("Not Active")) throw new ApiException("Error: Individual already Not Active");
-//
-//        individualOrganizer.setStatus("Not Active");
-//
-//        individualOrganizerRepository.save(individualOrganizer);
-//
-//    }
+    public void send_inquiry(Integer userId, String subject, String text) {
+        MyUser user = authRepository.findMyUserById(userId);
+        if (user == null) {
+            throw new ApiException("User not found");
+        }
+        emailSender.sendEmail(
+                "alsaedihussam449@gmail.com",
+                subject,
+                "<html>" +
+                        "<body style='background-color: green; font-size: 18px; color: white;'>" +
+                        "<div style='background-color: white; border: 4px solid green; padding: 10px; color: black;'>" +
+                        "<ul style='list-style-type: square; padding-left: 20px;'>" +
+                        "<li><strong>Inquirer's Name:</strong> " + user.getName() + "</li>" +
+                        "<li><strong>Inquirer's Email:</strong> " + user.getEmail() + "</li>" +
+                        "<li><strong>Message:</strong> " + text + "</li>" +
+                        "</ul>" +
+                        "</div>" +
+                        "</body>" +
+                        "</html>"
+        );
+
+
+    }
 
     // Naelah
     public List<SubmissionOutDTO> viewMyCompetitionSubmissions(Integer competition_id) {

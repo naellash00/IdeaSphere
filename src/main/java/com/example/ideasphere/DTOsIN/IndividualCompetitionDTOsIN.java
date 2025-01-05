@@ -40,7 +40,7 @@ public class IndividualCompetitionDTOsIN {
 
     private String status;
 
-    private Integer monetaryReward;
+    private Double monetaryReward;
 
     private Set<Category> categories;
 }

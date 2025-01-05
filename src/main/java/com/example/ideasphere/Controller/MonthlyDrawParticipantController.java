@@ -29,8 +29,23 @@ public class MonthlyDrawParticipantController {
 
     @PostMapping("/add/{monthlyDrawId}")
     public ResponseEntity<ApiResponse> add(@AuthenticationPrincipal MyUser user,@PathVariable Integer monthlyDrawId) {
-
         monthlyDrawParticipantService.addMonthlyDrawParticipant(user.getId(),monthlyDrawId);
         return  ResponseEntity.status(200).body(new ApiResponse("Successfully added monthly draw participant"));
+    }
+
+    @PutMapping("/assign-winner/{monthlyDrawId}")
+    public ResponseEntity<ApiResponse> assignWinner(@AuthenticationPrincipal MyUser user,
+                                                    @PathVariable Integer monthlyDrawId) {
+        monthlyDrawParticipantService.assignWinner(user.getId(),monthlyDrawId);
+        return ResponseEntity.status(200).body(new ApiResponse("Successfully assigned monthly draw participant"));
+    }
+
+    // get all participants assign in Monthly Draw
+    @GetMapping("/participants/{drawId}")
+    public ResponseEntity<List<String>> getParticipantsByDraw(@PathVariable Integer drawId) {
+
+        List<String> participants = monthlyDrawParticipantService.getParticipantsByDraw(drawId);
+        return ResponseEntity.ok(participants);
+
     }
 }

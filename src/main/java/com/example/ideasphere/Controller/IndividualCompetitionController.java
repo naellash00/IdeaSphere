@@ -22,9 +22,16 @@ public class IndividualCompetitionController {
     @Autowired
     private final IndividualCompetitionService individualCompetitionService;
 
-    @GetMapping("/get")
-    public ResponseEntity<List<IndividualCompetition>> getAllIndividualCompetitions(@AuthenticationPrincipal MyUser user){
-        return ResponseEntity.ok(individualCompetitionService.findAllIndividualCompetitions(user.getId()));
+
+    @GetMapping("/get-all-competition")
+    public ResponseEntity<List<IndividualCompetitionDTOOut>> getAllIndividualCompetitions(){
+        return ResponseEntity.ok(individualCompetitionService.getAllIndividualCompetitions());
+    }
+
+    @GetMapping("/get-my-competitions")
+    public ResponseEntity<List<IndividualCompetitionDTOOut>> getMyCompetitions(@AuthenticationPrincipal MyUser myUser) {
+        List<IndividualCompetitionDTOOut> competitions = individualCompetitionService.getMyCompetition(myUser.getId());
+        return ResponseEntity.ok(competitions);
     }
 
     @PostMapping("/add")
@@ -44,10 +51,11 @@ public class IndividualCompetitionController {
         return ResponseEntity.status(200).body(new ApiResponse("Successfully updated individualCompetition."));
     }
 
-    @PutMapping("/select/winner/{competition_id}/{submission_id}")
-    public ResponseEntity selectWinner(@PathVariable Integer competition_id, @PathVariable Integer submission_id){
-        individualCompetitionService.selectWinner(competition_id, submission_id);
-        return ResponseEntity.status(200).body(new ApiResponse("Winner Selected Successfully"));
+    @GetMapping("/get-competitions-by-status/{status}")
+    public List<IndividualCompetitionDTOOut> getCompetitionsByStatus(
+            @AuthenticationPrincipal MyUser user,
+            @PathVariable String status) {
+        return individualCompetitionService.getAllIndividualCompetitionsByStatus(user.getId(),status);
     }
 
     //Naelah

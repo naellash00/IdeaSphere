@@ -34,16 +34,21 @@ public class IndividualOrganizerController {
         return ResponseEntity.status(200).body(new ApiResponse("individual Organizer updated successfully"));
     }
 
-//    @PutMapping("/active/{id}")
-//    public ResponseEntity<ApiResponse> active(@PathVariable Integer id){
-//        individualOrganizerService.activeIndividual(id);
-//        return ResponseEntity.ok().body(new ApiResponse("Individual Organizer is Active"));
-//    }
-//
-//    @PutMapping("/detective/{id}")
-//    public ResponseEntity<ApiResponse> detectiveCompany(@PathVariable Integer id){
-//        individualOrganizerService.detectiveIndividual(id);
-//        return ResponseEntity.ok().body(new ApiResponse("Individual Organizer is Detective"));
-//    }
+
+    // hussam
+    @PostMapping("/send-inquiry")
+    public ResponseEntity<ApiResponse> sendMail1(
+            @AuthenticationPrincipal MyUser myUser,
+            @RequestParam String subject,
+            @RequestParam String text) {
+        individualOrganizerService.send_inquiry(myUser.getId(), subject, text);
+        return ResponseEntity.status(200).body(new ApiResponse("Successfully sent inquiry"));
+    }
+
+    //Naelah
+    @GetMapping("/view/my-competition/submissions/{competition_id}")
+    public ResponseEntity viewMyCompetitionSubmissions(@PathVariable Integer competition_id) {
+        return ResponseEntity.status(200).body(individualOrganizerService.viewMyCompetitionSubmissions(competition_id));
+    }
 
 }

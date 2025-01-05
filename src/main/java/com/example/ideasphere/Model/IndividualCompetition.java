@@ -21,7 +21,7 @@ public class IndividualCompetition {
 
     @NotNull(message = "MonetaryReward is mandatory")
     @Positive(message = "MonetaryReward must be a positive number")
-    private Integer monetaryReward;
+    private Double monetaryReward;
 
     @OneToOne
     @MapsId

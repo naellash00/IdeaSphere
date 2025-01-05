@@ -68,4 +68,10 @@ public class MonthlyDrawController {
         return monthlyDrawService.getMonthlyDrawWinner(myUser.getId(),drawId);
     }
 
+    @GetMapping("/eligible")
+    public List<MonthlyDrawOutDTOs> getEligibleMonthlyDraws(
+            @AuthenticationPrincipal MyUser user) {
+        return monthlyDrawService.getEligibleMonthlyDraws(user.getId());
+    }
+
 }
