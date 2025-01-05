@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -99,5 +100,9 @@ public class Competition {
 
     @OneToMany(cascade = CascadeType.ALL ,mappedBy = "competition")
     private Set<WinnerPayment> winnerPayments;
+
+    @ElementCollection
+    @CollectionTable(name = "competition_reviews", joinColumns = @JoinColumn(name = "competition_id"))
+    private List<String> reviews;
 
 }

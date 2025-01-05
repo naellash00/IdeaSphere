@@ -41,15 +41,15 @@ public class SubmissionService {
         submissionRepository.save(submission);
     }
 
-    // Not tested
-    public List<SubmissionOutDTO> getMySubmissions(Integer participant_id){
-        Participant participant = participantRepository.findParticipantById(participant_id);
-        List<SubmissionOutDTO> submissionOutDTOS = new ArrayList<>();
-        for(Submission s : participant.getSubmissions()){
-            submissionOutDTOS.add(new SubmissionOutDTO(s.getPDFFile(), s.getFileURL(), s.getSecondFileURL(),s.getThirdFileURL(),s.getDescription(), s.getSubmittedAt(), s.getCompetition().getTitle()));
-        }
-        return submissionOutDTOS;
-    }
+    // for participant
+//    public List<SubmissionOutDTO> getMySubmissions(Integer participant_id){
+//        Participant participant = participantRepository.findParticipantById(participant_id);
+//        List<SubmissionOutDTO> submissionOutDTOS = new ArrayList<>();
+//        for(Submission s : participant.getSubmissions()){
+//            submissionOutDTOS.add(new SubmissionOutDTO(s.getPDFFile(), s.getFileURL(), s.getSecondFileURL(),s.getThirdFileURL(),s.getDescription(), s.getSubmittedAt(), s.getCompetition().getTitle()));
+//        }
+//        return submissionOutDTOS;
+//    }
 
     // helper method to find what competition the participant won
     public Submission findTheCompetitionIWon(Integer competition_id, Integer participant_id){

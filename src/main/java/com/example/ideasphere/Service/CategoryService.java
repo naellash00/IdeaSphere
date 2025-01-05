@@ -30,6 +30,9 @@ public class CategoryService {
         if (category == null) {
             throw new ApiException("Category dose not Exist");
         }
+        if(participant.getCategories().contains(category)){
+            throw new ApiException("Category is already added to your profile");
+        }
         participant.getCategories().add(category);
         participantRepository.save(participant);
     }

@@ -3,14 +3,21 @@ package com.example.ideasphere.Service;
 
 import com.example.ideasphere.ApiResponse.ApiException;
 import com.example.ideasphere.DTOsIN.IndividualOrganizerDTOsIN;
+import com.example.ideasphere.DTOsOut.SubmissionOutDTO;
+import com.example.ideasphere.Model.Competition;
 import com.example.ideasphere.Model.IndividualOrganizer;
 import com.example.ideasphere.Model.MyUser;
+import com.example.ideasphere.Model.Submission;
 import com.example.ideasphere.Repository.AuthRepository;
+import com.example.ideasphere.Repository.CompetitionRepository;
 import com.example.ideasphere.Repository.IndividualOrganizerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +27,7 @@ public class IndividualOrganizerService {
     private final IndividualOrganizerRepository individualOrganizerRepository;
     @Autowired
     private final AuthRepository authRepository;
+    private final CompetitionRepository competitionRepository;
 
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -99,6 +107,26 @@ public class IndividualOrganizerService {
 //        individualOrganizerRepository.save(individualOrganizer);
 //
 //    }
+
+    // Naelah
+    public List<SubmissionOutDTO> viewMyCompetitionSubmissions(Integer competition_id) {
+        Competition competition = competitionRepository.findCompetitionById(competition_id);
+        List<SubmissionOutDTO> myCompetitionSubmissions = new ArrayList<>();
+        for (Submission submission : competition.getSubmissions()) {
+            SubmissionOutDTO submissionOutDTO = new SubmissionOutDTO();
+
+            submissionOutDTO.setPdfFile(submission.getPDFFile());
+            submissionOutDTO.setFileURL(submission.getFileURL());
+            submissionOutDTO.setSecondFileURL(submission.getSecondFileURL());
+            submissionOutDTO.setThirdFileURL(submission.getThirdFileURL());
+            submissionOutDTO.setDescription(submission.getDescription());
+            submissionOutDTO.setSubmittedAt(submission.getSubmittedAt());
+            submissionOutDTO.setCompetitionTitle(submission.getCompetition().getTitle());
+
+            myCompetitionSubmissions.add(submissionOutDTO);
+        }
+        return myCompetitionSubmissions;
+    }
 
 
 

@@ -10,7 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +30,8 @@ public class IndividualCompetitionService {
     @Autowired
     private final AuthRepository authRepository;
     private final SubmissionRepository submissionRepository;
+    private final WinnerPaymentService winnerPaymentService;
+    private final WinnerPaymentRepository winnerPaymentRepository;
 
 
     public  List<IndividualCompetition> findAllIndividualCompetitions(Integer userId){
@@ -119,8 +125,10 @@ public class IndividualCompetitionService {
     // Naelah
     public void selectWinner(Integer competition_id, Integer submission_id) {
         Competition competition = competitionRepository.findCompetitionById(competition_id);
+        IndividualCompetition individualCompetition = individualCompetitionRepository.findIndividualCompetitionById(competition.getId());
         Submission submission = submissionRepository.findSubmissionById(submission_id);
-        if (competition == null) {
+        WinnerPayment winnerPayment = new WinnerPayment();
+        if (competition == null || individualCompetition == null) {
             throw new ApiException("competition not found");
         }
         if (submission == null) {
@@ -131,7 +139,64 @@ public class IndividualCompetitionService {
             throw new ApiException("Incorrect submission for competition");
         }
         competition.setParticipantWinner(submission.getParticipant());
+        // winner payment
+        winnerPayment.setParticipantWinner(submission.getParticipant());
+        winnerPayment.setCompetition(competition);
+        winnerPayment.setAmount(individualCompetition.getMonetaryReward());
+        winnerPayment.setTransferDate(LocalDateTime.now());
+        winnerPayment.setTransferStatus("Completed");
+        winnerPayment.setTransferMethod("Bank Transfer");
+        winnerPayment.setCreatedAt(LocalDateTime.now());
+        winnerPayment.setUpdatedAt(LocalDateTime.now());
+
+
         competitionRepository.save(competition);
+        winnerPaymentRepository.save(winnerPayment);
+    }
+
+    public void acceptFeedbackRequest(Integer company_organizer_id, Integer submission_id, String feedback) {
+        Submission submission = submissionRepository.findSubmissionById(submission_id);
+        if (submission == null) {
+            throw new ApiException("submission not found");
+        }
+        if (!submission.getFeedbackRequestStatus().equalsIgnoreCase("Pending")) {
+            throw new ApiException("submission dose not have feedback request");
+        }
+        if (!submission.getCompetition().getCompanyCompetition().getCompanyOrganizer().getId().equals(company_organizer_id)) {
+            throw new ApiException("cannot respond to this request");
+        }
+        submission.setFeedbackRequestStatus("Accepted");
+        submission.setOrganizerFeedback(feedback);
+        submissionRepository.save(submission);
+    }
+
+    public void rejectFeedbackRequest(Integer company_organizer_id, Integer submission_id) {
+        Submission submission = submissionRepository.findSubmissionById(submission_id);
+        if (submission == null) {
+            throw new ApiException("submission not found");
+        }
+        if (!submission.getFeedbackRequestStatus().equalsIgnoreCase("Pending")) {
+            throw new ApiException("submission dose not have feedback request");
+        }
+        if (!submission.getCompetition().getCompanyCompetition().getCompanyOrganizer().getId().equals(company_organizer_id)) {
+            throw new ApiException("cannot respond to this request");
+        }
+        submission.setFeedbackRequestStatus("Rejected");
+        submission.setOrganizerFeedback("Request Is Rejected");
+        submissionRepository.save(submission);
+    }
+
+    //Naelah
+    public List<String> getMyCompetitionReviews(Integer competition_id) {
+        Competition competition = competitionRepository.findCompetitionById(competition_id);
+        if (competition == null) {
+            throw new ApiException("competition not found");
+        }
+        List<String> reviews = new ArrayList<>();
+        for (String review : competition.getReviews()) {
+            reviews.add(review);
+        }
+        return reviews;
     }
 
 }

@@ -3,6 +3,7 @@ package com.example.ideasphere.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,4 +52,11 @@ public class Submission {
     @ManyToOne
     @JsonIgnore
     private Competition competition;
+
+    @Column(columnDefinition = "text")
+    private String organizerFeedback;
+
+    @Column(columnDefinition = "varchar(9)")
+    @Pattern(regexp = "(Pending|Accepted|Rejected)")
+    private String feedbackRequestStatus;
 }

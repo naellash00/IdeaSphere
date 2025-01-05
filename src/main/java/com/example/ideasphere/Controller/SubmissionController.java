@@ -24,9 +24,4 @@ public class SubmissionController {
         submissionService.submit(participant_id, competition_id, submission);
         return ResponseEntity.status(200).body(new ApiResponse("Submit Completed Successfully"));
     }
-
-    @GetMapping("/get/my-submissions/{participant_id}")
-    public ResponseEntity getMySubmissions(@PathVariable Integer participant_id){
-        return ResponseEntity.status(200).body(submissionService.getMySubmissions(participant_id));
-    }
 }

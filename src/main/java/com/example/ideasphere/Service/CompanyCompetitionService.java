@@ -7,11 +7,15 @@ import com.example.ideasphere.Model.*;
 import com.example.ideasphere.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import com.example.ideasphere.DTOsOut.FeedbackOutDTO;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import com.example.ideasphere.DTOsIN.*;
+import com.example.ideasphere.Model.*;
+import com.example.ideasphere.Repository.*;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +28,8 @@ public class CompanyCompetitionService {
     private final ParticipantRepository participantRepository;
     private final CompetitionPaymentRepository competitionPaymentRepository;
     private final SubmissionRepository submissionRepository;
+    private final WinnerPaymentService winnerPaymentService;
+    private final WinnerPaymentRepository winnerPaymentRepository;
 
 
     public List<CompanyCompetitionDTOOut> getAllCompanyCompetition(){

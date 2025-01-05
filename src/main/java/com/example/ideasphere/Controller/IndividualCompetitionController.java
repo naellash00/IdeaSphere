@@ -2,6 +2,7 @@ package com.example.ideasphere.Controller;
 
 import com.example.ideasphere.ApiResponse.ApiResponse;
 import com.example.ideasphere.DTOsIN.IndividualCompetitionDTOsIN;
+import com.example.ideasphere.DTOsOut.IndividualCompetitionDTOOut;
 import com.example.ideasphere.Model.IndividualCompetition;
 import com.example.ideasphere.Model.MyUser;
 import com.example.ideasphere.Service.IndividualCompetitionService;
@@ -48,5 +49,19 @@ public class IndividualCompetitionController {
         individualCompetitionService.selectWinner(competition_id, submission_id);
         return ResponseEntity.status(200).body(new ApiResponse("Winner Selected Successfully"));
     }
+
+    //Naelah
+    @PutMapping("/select/winner/{competition_id}/{submission_id}")
+    public ResponseEntity selectWinner(@PathVariable Integer competition_id, @PathVariable Integer submission_id) {
+        individualCompetitionService.selectWinner(competition_id, submission_id);
+        return ResponseEntity.status(200).body(new ApiResponse("Winner Selected Successfully"));
+    }
+
+    //Naelah
+    @GetMapping("/get/my-competition/review/{competition_id}")
+    public ResponseEntity getMyCompetitionReviews(@AuthenticationPrincipal MyUser myUser, @PathVariable Integer competition_id) {
+        return ResponseEntity.status(200).body(individualCompetitionService.getMyCompetitionReviews(competition_id));
+    }
+
 
 }

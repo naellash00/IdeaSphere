@@ -87,10 +87,31 @@ public class CompanyCompetitionController {
         return ResponseEntity.status(200).body(new ApiResponse("Competition updated successfully."));
     }
 
+    //Naelah
     @PutMapping("/select/winner/{competition_id}/{submission_id}")
     public ResponseEntity selectWinner(@AuthenticationPrincipal MyUser myUser, @PathVariable Integer competition_id, @PathVariable Integer submission_id){
         companyCompetitionService.selectWinner(competition_id, submission_id);
         return ResponseEntity.status(200).body(new ApiResponse("Winner Selected Successfully"));
+    }
+
+    //Naelah
+    @PutMapping("/accept/feedback/request/{submission_id}")
+    public ResponseEntity acceptFeedbackRequest(@AuthenticationPrincipal MyUser myUser, @PathVariable Integer submission_id, @RequestBody String feedback){
+        companyCompetitionService.acceptFeedbackRequest(myUser.getId(), submission_id, feedback);
+        return ResponseEntity.status(200).body(new ApiResponse("You Feedback On The Submission Is Sent Successfully"));
+    }
+
+    // Naelah
+    @PutMapping("/reject/feedback/request/{submission_id}")
+    public ResponseEntity rejectFeedbackRequest(@AuthenticationPrincipal MyUser myUser, @PathVariable Integer submission_id){
+        companyCompetitionService.rejectFeedbackRequest(myUser.getId(), submission_id);
+        return ResponseEntity.status(200).body(new ApiResponse("You Rejection On The Submission Is Sent Successfully"));
+    }
+
+    //Naelah
+    @GetMapping("/get/my-competition/review/{competition_id}")
+    public ResponseEntity getMyCompetitionReviews(@AuthenticationPrincipal MyUser myUser, @PathVariable Integer competition_id){
+        return ResponseEntity.status(200).body(companyCompetitionService.getMyCompetitionReviews(competition_id));
     }
 
 
