@@ -34,11 +34,4 @@ public class CompanyOrganizerController {
         return ResponseEntity.status(200).body(new ApiResponse("Company Organizer is updated"));
     }
 
-    //Naelah
-    @GetMapping("/view/my-competition/submissions/{competition_id}")
-    public ResponseEntity viewMyCompetitionSubmissions(@AuthenticationPrincipal MyUser myUser, @PathVariable Integer competition_id){
-        return ResponseEntity.status(200).body(companyOrganizerService.viewMyCompetitionSubmissions(competition_id));
-    }
-
-
 }

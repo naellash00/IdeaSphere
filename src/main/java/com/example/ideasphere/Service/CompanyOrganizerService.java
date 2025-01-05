@@ -109,23 +109,4 @@ public class CompanyOrganizerService {
         return companyOrganizerDTOOut;
     }
 
-    // Naelah
-    public List<SubmissionOutDTO> viewMyCompetitionSubmissions(Integer competition_id){
-        Competition competition = competitionRepository.findCompetitionById(competition_id);
-        List<SubmissionOutDTO> myCompetitionSubmissions = new ArrayList<>();
-        for(Submission submission : competition.getSubmissions()){
-            SubmissionOutDTO submissionOutDTO = new SubmissionOutDTO();
-
-            submissionOutDTO.setPdfFile(submission.getPDFFile());
-            submissionOutDTO.setFileURL(submission.getFileURL());
-            submissionOutDTO.setSecondFileURL(submission.getSecondFileURL());
-            submissionOutDTO.setThirdFileURL(submission.getThirdFileURL());
-            submissionOutDTO.setDescription(submission.getDescription());
-            submissionOutDTO.setSubmittedAt(submission.getSubmittedAt());
-            submissionOutDTO.setCompetitionTitle(submission.getCompetition().getTitle());
-
-            myCompetitionSubmissions.add(submissionOutDTO);
-        }
-        return myCompetitionSubmissions;
-    }
 }

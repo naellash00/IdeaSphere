@@ -21,12 +21,8 @@ public class ParticipantService { // Naelah
     private final ParticipantRepository participantRepository;
     private final SubmissionService submissionService;
     private final CompanyCompetitionRepository companyCompetitionRepository;
-    private final CompetitionRepository competitionRepository;
-    private final SubmissionRepository submissionRepository;
-
-    //    public List<Participant> getAllParticipants(){
-//        return participantRepository.findAll();
-//    }
+    private final EmailSenderJava emailSender;
+    private final CategoryRepository categoryRepository;
 
     public List<ParticipantOutDTO> getAllParticipants() {
         List<Participant> participants = participantRepository.findAll();
@@ -87,15 +83,6 @@ public class ParticipantService { // Naelah
         participantRepository.save(oldParticipant);
     }
 
-    public List<SubmissionOutDTO> getMySubmissions(Integer participant_id) {
-        Participant participant = participantRepository.findParticipantById(participant_id);
-        List<SubmissionOutDTO> submissionOutDTOS = new ArrayList<>();
-        for (Submission s : participant.getSubmissions()) {
-            submissionOutDTOS.add(new SubmissionOutDTO(s.getPDFFile(), s.getFileURL(), s.getSecondFileURL(), s.getThirdFileURL(), s.getDescription(), s.getSubmittedAt(), s.getCompetition().getTitle()));
-        }
-        return submissionOutDTOS;
-    }
-
 
     public List<AchievementOutDTO> getMyAchievements(Integer participant_id) {
         Participant participant = participantRepository.findParticipantById(participant_id);
@@ -119,66 +106,6 @@ public class ParticipantService { // Naelah
         return achievements;
     }
 
-    public List<CompetitionOutDTO> recommendCompetitions(Integer participant_id) {
-        Participant participant = participantRepository.findParticipantById(participant_id);
-        List<Category> participantCategories = new ArrayList<>(participant.getCategories());
-        if (participantCategories.isEmpty()) {
-            throw new ApiException("participant has no categories associated with their profile.");
-        }
-        List<CompetitionOutDTO> recommendedCompetitions = new ArrayList<>();
-        for (Competition competition : competitionRepository.findAll()) {
-            for (Category category : competition.getCategories()) {
-                if (participantCategories.contains(category)) {
-                    CompetitionOutDTO competitionOutDTO = new CompetitionOutDTO();
-                    competitionOutDTO.setTitle(competition.getTitle());
-                    competitionOutDTO.setDescription(competition.getDescription());
-                    competitionOutDTO.setVotingMethod(competition.getVotingMethod());
-                    competitionOutDTO.setEndDate(competition.getEndDate());
-                    competitionOutDTO.setMaxParticipants(competition.getMaxParticipants());
-
-                    recommendedCompetitions.add(competitionOutDTO);
-                    break; // Add each competition only once
-                }
-            }
-            if (recommendedCompetitions.size() >= 3) {
-                break;
-            }
-        }
-        return recommendedCompetitions;
-    }
-
-    public void requestFeedbackOnSubmission(Integer participant_id, Integer submission_id) {
-        Submission submission = submissionRepository.findSubmissionById(submission_id);
-        if (submission.getFeedbackRequestStatus() != null) {
-            throw new ApiException("Feedback request already made");
-        }
-        if(submission.getParticipant().getId().equals(participant_id)){
-            throw new ApiException("Cannot request feedback on this submission");
-        }
-        // another check
-        submission.setFeedbackRequestStatus("Pending");
-        submissionRepository.save(submission);
-    }
-
-    public void addReviewOnCompetition(Integer participant_id, Integer competition_id, String review){
-        Competition competition = competitionRepository.findCompetitionById(competition_id);
-        Participant participant = participantRepository.findParticipantById(participant_id);
-        if(competition == null){
-            throw new ApiException("competition not found");
-        }
-        // check if participant is in the competition
-        // helper methods get participants in a competition
-        List<Participant> participants = new ArrayList<>();
-        for(Submission submission : competition.getSubmissions()){
-            participants.add(submission.getParticipant());
-        }
-        if(!participants.contains(participant)){
-            throw new ApiException("cannot add review in this competition");
-        }
-        competition.getReviews().add(review);
-        competitionRepository.save(competition);
-    }
-
     public List<FeedbackOutDTO> getMyFeedbacks(Integer participant_id) {
         Participant participant = participantRepository.findParticipantById(participant_id);
         if (participant == null) {
@@ -194,5 +121,34 @@ public class ParticipantService { // Naelah
             }
         }
         return feedbackList;
+    }
+
+    public void sendComplain(Integer participant_id, String subject, String text) {
+        MyUser user = authRepository.findMyUserById(participant_id);
+        if (user == null) {
+            throw new ApiException("User not found");
+        }
+        emailSender.sendEmail(
+                "naellaohun@gmail.com",
+                "Complaint Submission",
+                "<html>" +
+                        "<body style='background-color: #D4EBF8; font-size: 16px; color: #1F509A; font-family: Arial, sans-serif;'>" +
+                        "<div style='background-color: #ffffff; border: 2px solid #1F509A; padding: 20px; border-radius: 5px;'>" +
+                        "<p style='font-size: 18px; font-weight: bold; color: #0A3981;'>Complaint Submission</p>" +
+                        "<p>Dear Support Team,</p>" +
+                        "<p>A new complaint has been submitted with the following details:</p>" +
+                        "<ul style='list-style-type: square; padding-left: 20px; color: #1F509A;'>" +
+                        "<li><strong>Participant's Name:</strong> " + user.getName() + "</li>" +
+                        "<li><strong>Participant's Email:</strong> " + user.getEmail() + "</li>" +
+                        "<li><strong>Complaint Subject:</strong> " + subject + "</li>" +
+                        "<li><strong>Complaint Message:</strong> " + text + "</li>" +
+                        "</ul>" +
+                        "<p style='color: #0A3981;'>Please review the complaint and address it at your earliest convenience. If you require any further details, feel free to reach out to the complainant.</p>" +
+                        "<p style='margin-top: 20px; color: #0A3981;'>Best regards,</p>" +
+                        "<p style='font-weight: bold; color: #E38E49;'>The Idea Sphere Team</p>" +
+                        "</div>" +
+                        "</body>" +
+                        "</html>"
+        );
     }
 }

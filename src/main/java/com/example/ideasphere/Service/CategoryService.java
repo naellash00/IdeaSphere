@@ -10,17 +10,20 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryService {
+public class CategoryService { //Naelah
     private final CategoryRepository categoryRepository;
     private final ParticipantRepository participantRepository;
 
     // made by admin
-    public void uploadCategory(Integer admin_id, Category category) {
+    public void uploadCategoryInSystem(Integer admin_id, Category category) {
+        if(categoryRepository.findAll().contains(category)){
+            throw new ApiException("Category exist in the system");
+        }
         categoryRepository.save(category);
     }
 
     // Naelah
-    public void addCategory(Integer participant_id, Integer category_id) {
+    public void addCategoryToMyProfile(Integer participant_id, Integer category_id) {
         Participant participant = participantRepository.findParticipantById(participant_id);
         // check if the category exist in the system
         Category category = categoryRepository.findCategoryById(category_id);

@@ -9,22 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class AdminService {
     private final AuthRepository authRepository;
     private final CompanyOrganizerRepository companyOrganizerRepository;
-
-
-    public void register(AdminInDTO adminInDTO){
-        MyUser myUser = new MyUser();
-        myUser.setRole("ADMIN");
-        myUser.setUsername(adminInDTO.getUsername());
-        String hashPassword = new BCryptPasswordEncoder().encode(adminInDTO.getPassword());
-        myUser.setPassword(hashPassword);
-
-        authRepository.save(myUser);
-    }
 
     public void activeCompany(Integer id){
 

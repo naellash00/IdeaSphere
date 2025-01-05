@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -30,12 +31,30 @@ public class VoteService { // naelah
         if (submission == null) {
             throw new ApiException("submission not found");
         }
-        if (!submission.getCompetition().getVotingMethod().equalsIgnoreCase("By Public Vote")) {
-            throw new ApiException("this competition is not under vote");
+
+
+        if (!"Under Voting Process".equalsIgnoreCase(submission.getCompetition().getStatus())) {
+            throw new ApiException("this competition is not under vote process");
         }
+        // check voter is not in the competition
+        if(submission.getParticipant().getId().equals(voter.getId())){
+            throw new ApiException("Participant cannot vote on this competition");
+        }
+        //disjoint to check  two collections have no mutual elements
+        if(Collections.disjoint(submission.getCompetition().getCategories(), voter.getCategories())){
+            throw new ApiException("Participant cannot vote on this competition, no matching categories");
+        }
+        // to vote once only
+        for (Vote vote : submission.getVotes()) {
+            if (vote.getVoter().getId().equals(voter.getId())) {
+                throw new ApiException("You have already voted for this submission");
+            }
+        }
+
         Vote vote = new Vote();
         vote.setVoter(voter);
         vote.setSubmission(submission);
+        vote.setCompetition(submission.getCompetition());
         vote.setVoteDate(LocalDateTime.now());
         // add points to the voter
         voter.setPoints(voter.getPoints() + 10);
