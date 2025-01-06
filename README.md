@@ -30,7 +30,7 @@ IdeaSphere is a dedicated platform that empowers individuals to showcase their c
 
 ## Class Diagram
 
-![Class Diagram](./IdeaSphereClassDiagram.drawio.png)
+![Class Diagram](https://cdn.discordapp.com/attachments/1321830373256335403/1325847348890566749/IdeaSphereClassDiagram.drawio.png?ex=677d4711&is=677bf591&hm=544b66b3840b4305752da97ce688d9c900d7666a08bf0c9d47adc8376e722fe1&)
 
 ## Use Case Diagram
 
