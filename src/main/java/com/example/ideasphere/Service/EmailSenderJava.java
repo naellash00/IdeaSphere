@@ -13,7 +13,7 @@ public class EmailSenderJava {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setFrom("alsaedihussam449@gmail.com");
+            helper.setFrom("ideasphereee@gmail.com");
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(text, true);

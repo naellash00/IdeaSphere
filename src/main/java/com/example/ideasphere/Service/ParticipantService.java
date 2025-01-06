@@ -26,6 +26,7 @@ public class ParticipantService { // Naelah
     private final EmailSenderJava emailSender;
     private final CategoryRepository categoryRepository;
 
+
     public List<ParticipantOutDTO> getAllParticipants() {
         List<Participant> participants = participantRepository.findAll();
         List<ParticipantOutDTO> participantOutDTOS = new ArrayList<>();
@@ -60,7 +61,33 @@ public class ParticipantService { // Naelah
 
         authRepository.save(user);
         participantRepository.save(participant);
+        sendWelcomeEmail(user, participant.getPoints());
     }
+
+    private void sendWelcomeEmail(MyUser myUser, Integer points) {
+        String subject = "Welcome to Our Platform!";
+        String message = "<html>" +
+                "<body style='background-color: #D4EBF8; font-size: 16px; color: #1F509A; font-family: Arial, sans-serif;'>" +
+                "<div style='background-color: #ffffff; border: 2px solid #1F509A; padding: 20px; border-radius: 5px;'>" +
+                "<p style='font-size: 18px; font-weight: bold; color: #0A3981;'>Dear " + myUser.getName() + ",</p>" +
+                "<p>Welcome to our platform! We are thrilled to have you join us as an Participant. Below are your registration details:</p>" +
+                "<ul style='list-style-type: square; padding-left: 20px; color: #1F509A;'>" +
+                "<li><strong>Name:</strong> " + myUser.getName() + "</li>" +
+                "<li><strong>Username:</strong> " + myUser.getUsername() + "</li>" +
+                "<li><strong>Email:</strong> " + myUser.getEmail() + "</li>" +
+                "<li><strong>points:</strong> " + points + "</li>" +
+                "</ul>" +
+                "<p>If you have any questions or need assistance, feel free to contact our support team at <a href='mailto:support@IdeaSphere.com' style='color: #E38E49;'>support@IdeaSphere.com</a>.</p>" +
+                "<p style='color: #1F509A;'>Thank you for choosing our platform, and we wish you great success in your endeavors.</p>" +
+                "<p style='margin-top: 20px; color: #0A3981;'>Best regards,</p>" +
+                "<p style='font-weight: bold; color: #E38E49;'>The Idea Sphere Team</p>" +
+                "</div>" +
+                "</body>" +
+                "</html>";
+
+        emailSender.sendEmail(myUser.getEmail(), subject, message);
+    }
+
     public void checkCategoryExist(Set<Category> categories){
         for(Category category : categories){
             Category findCategory = categoryRepository.findCategoryById(category.getId());

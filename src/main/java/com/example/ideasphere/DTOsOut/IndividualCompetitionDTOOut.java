@@ -22,7 +22,7 @@ public class IndividualCompetitionDTOOut {
     private Integer maxParticipants;
     private String status;
     private Set<String> categories;
-
+    private String participantWinnerName;
     private  Double  monetaryReward;
     private String individualOrganizerName;
 

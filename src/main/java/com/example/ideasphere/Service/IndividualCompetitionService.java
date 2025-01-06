@@ -152,6 +152,7 @@ public class IndividualCompetitionService {
         return individualCompetitions.stream().map(individualCompetition -> {
             Competition competition = individualCompetition.getCompetition();
             IndividualCompetitionDTOOut dto = new IndividualCompetitionDTOOut();
+            String participantWinnerName = competition.getParticipantWinner() != null? competition.getParticipantWinner().getUser().getName(): null;
 
 
 
@@ -163,6 +164,7 @@ public class IndividualCompetitionService {
             dto.setEndDate(competition.getEndDate());
             dto.setMaxParticipants(competition.getMaxParticipants());
             dto.setStatus(competition.getStatus());
+            dto.setParticipantWinnerName(participantWinnerName);
             dto.setCategories(
                     competition.getCategories() != null
                             ? competition.getCategories().stream().map(Category::getCategoryName).collect(Collectors.toSet())
@@ -271,8 +273,10 @@ public class IndividualCompetitionService {
         return individualCompetitionRepository.findByStatusAndUserId(status, user.getId());
     }
 
+/*
     public IndividualCompetitionDTOOut ConvertDTO(IndividualCompetition individualCompetition) {
         Competition competition = individualCompetition.getCompetition();
+        String participantWinnerName = competition.getParticipantWinner() != null? competition.getParticipantWinner().getUser().getName(): null;
 
         return new IndividualCompetitionDTOOut(
                 competition.getTitle(),
@@ -283,12 +287,14 @@ public class IndividualCompetitionService {
                 competition.getEndDate(),
                 competition.getMaxParticipants(),
                 competition.getStatus(),
+
                 competition.getCategories().stream().map(Category::getCategoryName).collect(Collectors.toSet()),
                 individualCompetition.getMonetaryReward(),
                 competition.getIndividualCompetition().getIndividualOrganizer().getMyUser().getName()
 
         );
     }
+*/
 
 
     public void addPayment(Integer user_id, IndividualCompetitionPaymentDTOIn CompetitionPaymentDTOIn) {

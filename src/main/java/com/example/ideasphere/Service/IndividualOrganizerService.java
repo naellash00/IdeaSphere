@@ -68,7 +68,32 @@ public class IndividualOrganizerService {
         individualOrganizer1.setMyUser(myUser);
 
         individualOrganizerRepository.save(individualOrganizer1);
+        // Send a welcome email
+        sendWelcomeEmail(myUser, individualOrganizer.getPhoneNumber());
+    }
 
+    private void sendWelcomeEmail(MyUser myUser, String phoneNumber) {
+        String subject = "Welcome to Our Platform!";
+        String message = "<html>" +
+                "<body style='background-color: #D4EBF8; font-size: 16px; color: #1F509A; font-family: Arial, sans-serif;'>" +
+                "<div style='background-color: #ffffff; border: 2px solid #1F509A; padding: 20px; border-radius: 5px;'>" +
+                "<p style='font-size: 18px; font-weight: bold; color: #0A3981;'>Dear " + myUser.getName() + ",</p>" +
+                "<p>Welcome to our platform! We are thrilled to have you join us as an Individual Organizer. Below are your registration details:</p>" +
+                "<ul style='list-style-type: square; padding-left: 20px; color: #1F509A;'>" +
+                "<li><strong>Name:</strong> " + myUser.getName() + "</li>" +
+                "<li><strong>Username:</strong> " + myUser.getUsername() + "</li>" +
+                "<li><strong>Email:</strong> " + myUser.getEmail() + "</li>" +
+                "<li><strong>Phone Number:</strong> " + phoneNumber + "</li>" +
+                "</ul>" +
+                "<p>If you have any questions or need assistance, feel free to contact our support team at <a href='mailto:support@IdeaSphere.com' style='color: #E38E49;'>support@IdeaSphere.com</a>.</p>" +
+                "<p style='color: #1F509A;'>Thank you for choosing our platform, and we wish you great success in your endeavors.</p>" +
+                "<p style='margin-top: 20px; color: #0A3981;'>Best regards,</p>" +
+                "<p style='font-weight: bold; color: #E38E49;'>The Idea Sphere Team</p>" +
+                "</div>" +
+                "</body>" +
+                "</html>";
+
+        emailSender.sendEmail(myUser.getEmail(), subject, message);
     }
 
     // update Individual Organizer  user
