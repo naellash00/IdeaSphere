@@ -43,12 +43,6 @@ IdeaSphere is a dedicated platform that empowers individuals to showcase their c
 
 ![Use Case Diagram](https://cdn.discordapp.com/attachments/1321830373256335403/1325964561186164766/ideaSphereUseCase.drawio.png?ex=677db43a&is=677c62ba&hm=db0d9c750d1284664d39951e937a190b0a289b3b464040db2fb2f33d58abb08a&)
 
----
-
-## Summary
-
-- **Total Endpoints**: 41
-- **Controllers**: 8
 
 ---
 
