@@ -1,8 +1,12 @@
 # IdeaSphere API Documentation
 
-**IdeaSphere** is a platform that empowers individuals to showcase their creativity and innovation by organizing and participating in competitions across various fields.
+**System Description**
+
+-  IdeaSphere is a dedicated platform that empowers individuals to showcase their creativity and innovation through organizing and participating in competitions across various fields.
+-  فضاء الحلول هو منصة مخصصة تمكن الأفراد من عرض إبداعاتهم وابتكاراتهم من خلال تنظيم والمشاركة في مسابقات في مختلف المجالات.
 
 ## Summary
+
 - **Total Endpoints**: 41
 - **Controllers**: 8
 
@@ -11,6 +15,7 @@
 ## Endpoints by Controller
 
 ### CompanyCompetitionController
+
 1. **GET** `/get-all-competition` - Get all competitions for Company Competition.
 2. **GET** `/get-my-competitions` - Get competitions for the authenticated company organizer.
 3. **POST** `/create-competition-financial-interview` - Create a competition with financial and interview reward types.
@@ -25,6 +30,7 @@
 **Total**: 10 endpoints
 
 ### CompanyOrganizerController
+
 1. **GET** `/get-profile` - Get the profile of the authenticated company organizer.
 2. **POST** `/register` - Register as a company organizer.
 3. **PUT** `/update-profile` - Update the profile of the authenticated company organizer.
@@ -32,11 +38,13 @@
 **Total**: 3 endpoints
 
 ### CompetitionPaymentController
+
 1. **GET** `/get-my-competition-payment` - Get all competition payments for the authenticated organizer.
 
 **Total**: 1 endpoint
 
 ### MonthlySubscriptionController
+
 1. **GET** `/get-all-monthly-subscription` - Get all monthly subscriptions (Admin only).
 2. **GET** `/get-my-monthly-subscription` - Get the monthly subscriptions of the authenticated user.
 3. **POST** `/subscribe/{subscriptionPackageId}` - Subscribe to a package.
@@ -45,6 +53,7 @@
 **Total**: 4 endpoints
 
 ### SubscriptionPackageController
+
 1. **GET** `/get-all-subscription-package` - Get all subscription packages.
 2. **GET** `/get-subscription-package-by-id/{id}` - Get a subscription package by its ID.
 3. **POST** `/add-subscription-package` - Add a new subscription package (Admin only).
@@ -55,12 +64,14 @@
 **Total**: 6 endpoints
 
 ### AdminController
+
 1. **PUT** `/active-company-user/{id}` - Activate a company account after reviewing its information.
 2. **PUT** `/detective-company-user/{id}` - Deactivate a company account.
 
 **Total**: 2 endpoints
 
 ### SchedulerService
+
 1. Automatically scheduled task: `updateExpiredCompetition` - Updates competitions that have expired.
 2. Automatically scheduled task: `updateStuckCompetition` - Updates competitions stuck in an unresolved state.
 3. Automatically scheduled task: `updateCompetitionUnderVote` - Updates competitions under public voting.
