@@ -17,7 +17,6 @@ public class CompanyOrganizerDTOOut {
     private String username;
     private String name;
     private String email;
-    private String role;
     private String companyName;
     private String commercialRecord;
     private String contactEmail;

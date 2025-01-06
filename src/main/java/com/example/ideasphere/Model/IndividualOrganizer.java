@@ -31,6 +31,8 @@ public class IndividualOrganizer {
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 
+    private Integer countCompetitionCancellation = 0;
+
     @OneToOne
     @MapsId
     @JsonIgnore

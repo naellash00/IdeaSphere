@@ -12,7 +12,7 @@ public interface CompetitionPaymentRepository extends JpaRepository<CompetitionP
     CompetitionPayment findCompetitionPaymentById(Integer id);
 
     CompetitionPayment findCompetitionPaymentByCompetitionId(Integer competitionId);
-
-    List<CompetitionPayment> findCompetitionPaymentByCompetition_CompanyCompetitionId(Integer CompanyCompetitionId);
+    CompetitionPayment findCompetitionPaymentByCompetitionIdAndTypePayment(Integer competitionId , String typePayment);
+    List<CompetitionPayment> findCompetitionPaymentByCompetition_CompanyCompetitionCompanyOrganizerId(Integer CompanyCompetitionId);
     List<CompetitionPayment> findCompetitionPaymentByCompetition_IndividualCompetitionId(Integer IndividualCompetitionId);
 }

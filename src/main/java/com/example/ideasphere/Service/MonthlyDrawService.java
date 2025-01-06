@@ -113,7 +113,6 @@ public class MonthlyDrawService {
         List<MonthlyDrawOutDTOs> monthlyDrawOutDTOs = new ArrayList<>();
         for (MonthlyDraw monthlyDraw : monthlyDraws) {
             MonthlyDrawOutDTOs monthlyDrawOutDTOs1 = new MonthlyDrawOutDTOs(
-                    monthlyDraw.getId(),
                     monthlyDraw.getName(),monthlyDraw.getDescription(),monthlyDraw.getPrize(),
                     monthlyDraw.getImage(),monthlyDraw.getRequiredPoints(),
                     monthlyDraw.getCreatedAt(),monthlyDraw.getEndDate());
@@ -135,7 +134,6 @@ public class MonthlyDrawService {
 
         for (MonthlyDraw monthlyDraw : monthlyDraws) {
             MonthlyDrawOutDTOs monthlyDrawOutDTOs1 = new MonthlyDrawOutDTOs(
-                    monthlyDraw.getId(),
                     monthlyDraw.getName(),monthlyDraw.getDescription(),monthlyDraw.getPrize(),
                     monthlyDraw.getImage(),monthlyDraw.getRequiredPoints(),
                     monthlyDraw.getCreatedAt(),monthlyDraw.getEndDate());
@@ -163,7 +161,6 @@ public class MonthlyDrawService {
 
         for (MonthlyDraw monthlyDraw : monthlyDraws) {
             MonthlyDrawOutDTOs monthlyDrawOutDTOs1 = new MonthlyDrawOutDTOs(
-                    monthlyDraw.getId(),
                     monthlyDraw.getName(),monthlyDraw.getDescription(),monthlyDraw.getPrize(),
                     monthlyDraw.getImage(),monthlyDraw.getRequiredPoints(),
                     monthlyDraw.getCreatedAt(),monthlyDraw.getEndDate());

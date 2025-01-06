@@ -20,18 +20,23 @@ public class CompanyCompetitionController {
 
     private final CompanyCompetitionService companyCompetitionService;
 
+    // by Basil
+    // get all competition for Company Competition
     @GetMapping("/get-all-competition")
     public ResponseEntity<List<CompanyCompetitionDTOOut>> getAllCompetitions() {
         List<CompanyCompetitionDTOOut> competitions = companyCompetitionService.getAllCompanyCompetition();
         return ResponseEntity.ok(competitions);
     }
-
+    // by Basil
+    // get my competition as company Organizer
     @GetMapping("/get-my-competitions")
     public ResponseEntity<List<CompanyCompetitionDTOOut>> getMyCompetitions(@AuthenticationPrincipal MyUser myUser) {
         List<CompanyCompetitionDTOOut> competitions = companyCompetitionService.getMyCompetition(myUser.getId());
         return ResponseEntity.ok(competitions);
     }
 
+    // by Basil
+    // create competition with Reward type financial and interview
     @PostMapping("/create-competition-financial-interview")
     public ResponseEntity<ApiResponse> createFinancialInterview(
             @AuthenticationPrincipal MyUser myUser,
@@ -40,6 +45,8 @@ public class CompanyCompetitionController {
         return ResponseEntity.status(201).body(new ApiResponse("Competition created successfully."));
     }
 
+    // by Basil
+    // create competition with Reward type interview
     @PostMapping("/create-competition-interview")
     public ResponseEntity<ApiResponse> createInterview(
             @AuthenticationPrincipal MyUser myUser,
@@ -47,7 +54,8 @@ public class CompanyCompetitionController {
         companyCompetitionService.createCompetitionInterview(myUser.getId(), competitionDTO);
         return ResponseEntity.status(201).body(new ApiResponse("Competition created successfully."));
     }
-
+    // by Basil
+    // create competition with Reward type financial and select winner method by-vote
     @PostMapping("/create-competition-financial-by-vote")
     public ResponseEntity<ApiResponse> createFinancialByVote(
             @AuthenticationPrincipal MyUser myUser,
@@ -55,7 +63,8 @@ public class CompanyCompetitionController {
         companyCompetitionService.createCompetitionFinancialByVoteDTOIn(myUser.getId(), competitionDTO);
         return ResponseEntity.status(201).body(new ApiResponse("Competition created successfully."));
     }
-
+    // by Basil
+    // create competition with Reward type financial and select winner method by-organizer
     @PostMapping("/create-competition-financial-by-organizer")
     public ResponseEntity<ApiResponse> createFinancialByOrganizer(
             @AuthenticationPrincipal MyUser myUser,
@@ -63,6 +72,9 @@ public class CompanyCompetitionController {
         companyCompetitionService.createCompetitionFinancialByOrganizerDTOIn(myUser.getId(), competitionDTO);
         return ResponseEntity.status(201).body(new ApiResponse("Competition created successfully."));
     }
+
+    // by Basil
+    // pay monetary Reward to start the competition
     @PostMapping("/add-competition-payment")
     public ResponseEntity<ApiResponse> addPayment(
             @AuthenticationPrincipal MyUser myUser,
@@ -70,7 +82,17 @@ public class CompanyCompetitionController {
         companyCompetitionService.addPayment(myUser.getId(), competitionPaymentDTOIn);
         return ResponseEntity.status(200).body(new ApiResponse("Competition Payment Completed Successfully."));
     }
-
+    // by Basil
+    // cancel Competition the competition return payment if Reward type have financial
+    @PutMapping("/cancel-competition/{companyCompetitionId}")
+    public ResponseEntity<ApiResponse> cancelCompetition(
+            @AuthenticationPrincipal MyUser myUser,
+            @PathVariable Integer companyCompetitionId){
+        companyCompetitionService.cancelCompetition(myUser.getId(), companyCompetitionId);
+        return ResponseEntity.status(200).body(new ApiResponse("Competition canceled Successfully."));
+    }
+    // by Basil
+    // extend the competition dates and number of Participant
     @PutMapping("/extend-competition")
     public ResponseEntity<ApiResponse> extendCompetition(
             @AuthenticationPrincipal MyUser myUser,
@@ -78,7 +100,8 @@ public class CompanyCompetitionController {
         companyCompetitionService.extendCompetition(myUser.getId(), companyCompetitionExtendDTOIn);
         return ResponseEntity.status(200).body(new ApiResponse("Competition extend successfully."));
     }
-
+    // by Basil
+    // update the competition content
     @PutMapping("/update-competition")
     public ResponseEntity<ApiResponse> updateCompetition(
             @AuthenticationPrincipal MyUser myUser,

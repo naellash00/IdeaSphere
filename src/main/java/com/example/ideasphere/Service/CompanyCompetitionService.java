@@ -27,6 +27,7 @@ public class CompanyCompetitionService {
     private final CategoryRepository categoryRepository;
     private final CompetitionPaymentRepository competitionPaymentRepository;
     private final MonthlySubscriptionRepository monthlySubscriptionRepository;
+    private final CompanyOrganizerRepository companyOrganizerRepository;
 
 
     public List<CompanyCompetitionDTOOut> getAllCompanyCompetition(){
@@ -304,6 +305,7 @@ public class CompanyCompetitionService {
 
         competitionPayment.setPaymentMethod(competitionPaymentDTOIn.getPaymentMethod());
         competitionPayment.setPaymentStatus("Completed");
+        competitionPayment.setTypePayment("Payment");
         competitionPayment.setAmount(companyCompetition.getMonetaryReward());
         competitionPayment.setCompetition(companyCompetition.getCompetition());
 
@@ -312,6 +314,47 @@ public class CompanyCompetitionService {
         Competition competition = companyCompetition.getCompetition();
         competition.setStatus("Ongoing");
         competitionRepository.save(competition);
+    }
+
+    public void cancelCompetition(Integer user_id, Integer companyCompetition_id){
+        MyUser myUser = authRepository.findMyUserById(user_id);
+        if (myUser == null) throw new ApiException("Error :user not found");
+
+        CompanyCompetition companyCompetition = companyCompetitionRepository.findCompanyCompetitionById(companyCompetition_id);
+
+        if (companyCompetition == null) throw new ApiException("Error: companyCompetition not found");
+
+        if ( !companyCompetition.getCompanyOrganizer().getId().equals(myUser.getId())) throw new ApiException("Error: this competition not belong to you, you can't cancel.");
+
+        if (companyCompetition.getCompetition().getStatus().equalsIgnoreCase("canceled") || companyCompetition.getCompetition().getStatus().equalsIgnoreCase("Completed")) throw new ApiException("Error: the Competition status is ("+companyCompetition.getCompetition().getStatus()+")");
+
+
+        Competition competition = companyCompetition.getCompetition();
+        competition.setStatus("canceled");
+        competitionRepository.save(competition);
+
+        CompanyOrganizer companyOrganizer = companyCompetition.getCompanyOrganizer();
+        companyOrganizer.setCountCompetitionCancellation(companyOrganizer.getCountCompetitionCancellation()+1);
+        companyOrganizerRepository.save(companyOrganizer);
+
+        CompetitionPayment duplicatedRefundPayment = competitionPaymentRepository.findCompetitionPaymentByCompetitionIdAndTypePayment(companyCompetition.getCompetition().getId() , "Refund");
+
+        if (duplicatedRefundPayment != null ) return;
+
+        CompetitionPayment payment = competitionPaymentRepository.findCompetitionPaymentByCompetitionId(companyCompetition.getCompetition().getId());
+
+        if (payment == null) return;
+
+        CompetitionPayment competitionPayment = new CompetitionPayment();
+
+        competitionPayment.setPaymentMethod(payment.getPaymentMethod());
+        competitionPayment.setPaymentStatus("Completed");
+        competitionPayment.setTypePayment("Refund");
+        competitionPayment.setAmount(payment.getAmount());
+        competitionPayment.setCompetition(companyCompetition.getCompetition());
+
+        competitionPaymentRepository.save(competitionPayment);
+
     }
 
     public void checkCategoryExist(Set<Category> categories){
@@ -348,7 +391,6 @@ public class CompanyCompetitionService {
         String participantWinnerName = competition.getParticipantWinner() != null? competition.getParticipantWinner().getUser().getName(): null;
 
         return new CompanyCompetitionDTOOut(
-                competition.getId(),
                 competition.getTitle(),
                 competition.getDescription(),
                 competition.getVotingMethod(),

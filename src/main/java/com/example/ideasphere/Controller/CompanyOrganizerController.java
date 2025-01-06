@@ -18,16 +18,22 @@ public class CompanyOrganizerController {
     private final CompanyOrganizerService companyOrganizerService;
 
 
+    // By Basil
+    // get profile Company Organizer
     @GetMapping("/get-profile")
     public ResponseEntity getProfile(@AuthenticationPrincipal MyUser myUser){
         return ResponseEntity.ok(companyOrganizerService.getMyProfile(myUser.getId()));
     }
 
+    // By Basil
+    // sign up for Company Organizer
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid CompanyOrganizerDTOIn companyOrganizerDTOIn){
         companyOrganizerService.register(companyOrganizerDTOIn);
         return ResponseEntity.status(201).body(new ApiResponse("Company Organizer is Registered"));
     }
+    // By Basil
+    // update for Company Organizer
     @PutMapping("/update-profile")
     public ResponseEntity update(@AuthenticationPrincipal MyUser myUser ,@RequestBody @Valid CompanyOrganizerDTOIn companyOrganizerDTOIn){
         companyOrganizerService.updateProfile(myUser.getId() , companyOrganizerDTOIn);

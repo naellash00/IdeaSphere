@@ -51,6 +51,9 @@ public class IndividualCompetitionService {
     @Autowired
     private MonthlySubscriptionRepository monthlySubscriptionRepository;
 
+
+    private IndividualOrganizerRepository individualOrganizerRepository;
+
     public List<IndividualCompetitionDTOOut> getAllIndividualCompetitions() {
         List<IndividualCompetition> individualCompetitions = individualCompetitionRepository.findAll();
 
@@ -63,7 +66,6 @@ public class IndividualCompetitionService {
             IndividualCompetitionDTOOut dto = new IndividualCompetitionDTOOut();
 
 
-            dto.setCompetitionId(competition.getId());
             dto.setTitle(competition.getTitle());
             dto.setDescription(competition.getDescription());
             dto.setVotingMethod(competition.getVotingMethod());
@@ -103,7 +105,7 @@ public class IndividualCompetitionService {
                     Competition competition = individualCompetition.getCompetition();
                     IndividualCompetitionDTOOut dto = new IndividualCompetitionDTOOut();
 
-                    dto.setCompetitionId(competition.getId());
+
                     dto.setTitle(competition.getTitle());
                     dto.setDescription(competition.getDescription());
                     dto.setVotingMethod(competition.getVotingMethod());
@@ -152,7 +154,7 @@ public class IndividualCompetitionService {
             IndividualCompetitionDTOOut dto = new IndividualCompetitionDTOOut();
 
 
-            dto.setCompetitionId(competition.getId());
+
             dto.setTitle(competition.getTitle());
             dto.setDescription(competition.getDescription());
             dto.setVotingMethod(competition.getVotingMethod());
@@ -273,7 +275,6 @@ public class IndividualCompetitionService {
         Competition competition = individualCompetition.getCompetition();
 
         return new IndividualCompetitionDTOOut(
-                competition.getId(),
                 competition.getTitle(),
                 competition.getDescription(),
                 competition.getVotingMethod(),
@@ -310,6 +311,7 @@ public class IndividualCompetitionService {
 
         competitionPayment.setPaymentMethod(CompetitionPaymentDTOIn.getPaymentMethod());
         competitionPayment.setPaymentStatus("Completed");
+        competitionPayment.setTypePayment("Payment");
         competitionPayment.setAmount(individualCompetition.getMonetaryReward());
         competitionPayment.setCompetition(individualCompetition.getCompetition());
 
@@ -319,7 +321,47 @@ public class IndividualCompetitionService {
         competition.setStatus("Ongoing");
         competitionRepository.save(competition);
     }
+    public void cancelCompetition(Integer user_id, Integer individualCompetition_id){
+        MyUser myUser = authRepository.findMyUserById(user_id);
+        if (myUser == null) throw new ApiException("Error :user not found");
 
+        IndividualCompetition individualCompetition = individualCompetitionRepository.findIndividualCompetitionById(individualCompetition_id);
+
+        if (individualCompetition == null) throw new ApiException("Error: individualCompetition not found");
+
+        if ( !individualCompetition.getIndividualOrganizer().getId().equals(myUser.getId())) throw new ApiException("Error: this competition not belong to you, you can't cancel.");
+
+        if (individualCompetition.getCompetition().getStatus().equalsIgnoreCase("canceled") || individualCompetition.getCompetition().getStatus().equalsIgnoreCase("Completed")) throw new ApiException("Error: the Competition status is ("+individualCompetition.getCompetition().getStatus()+")");
+
+
+        Competition competition = individualCompetition.getCompetition();
+        competition.setStatus("canceled");
+        competitionRepository.save(competition);
+
+        IndividualOrganizer individualOrganizer = individualCompetition.getIndividualOrganizer();
+        individualOrganizer.setCountCompetitionCancellation(individualOrganizer.getCountCompetitionCancellation()+1);
+        individualOrganizerRepository.save(individualOrganizer);
+
+
+        CompetitionPayment duplicatedRefundPayment = competitionPaymentRepository.findCompetitionPaymentByCompetitionIdAndTypePayment(individualCompetition.getCompetition().getId() , "Refund");
+
+        if (duplicatedRefundPayment != null ) return;
+
+        CompetitionPayment payment = competitionPaymentRepository.findCompetitionPaymentByCompetitionId(individualCompetition.getCompetition().getId());
+
+        if (payment == null) return;
+
+        CompetitionPayment competitionPayment = new CompetitionPayment();
+
+        competitionPayment.setPaymentMethod(payment.getPaymentMethod());
+        competitionPayment.setPaymentStatus("Completed");
+        competitionPayment.setTypePayment("Refund");
+        competitionPayment.setAmount(payment.getAmount());
+        competitionPayment.setCompetition(individualCompetition.getCompetition());
+
+        competitionPaymentRepository.save(competitionPayment);
+
+    }
     public void extendCompetition(Integer user_id , IndividualCompetitionExtendDTOIn individualCompetitionExtendDTOIn  ){
         MyUser myUser = authRepository.findMyUserById(user_id);
 

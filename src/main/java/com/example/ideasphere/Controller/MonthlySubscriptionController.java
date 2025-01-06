@@ -16,21 +16,29 @@ public class MonthlySubscriptionController {
 
     private final MonthlySubscriptionService monthlySubscriptionService;
 
+
+    // By basil
+    // Get all monthly subscription for admin
     @GetMapping("/get-all-monthly-subscription")
     public ResponseEntity getAllMonthlySubscription(){
         return ResponseEntity.ok(monthlySubscriptionService.getAllMonthlySubscription());
     }
-
+    // By basil
+    // get my monthly subscription
     @GetMapping("/get-my-monthly-subscription")
     public ResponseEntity getMyMonthlySubscription(@AuthenticationPrincipal MyUser myUser){
         return ResponseEntity.ok(monthlySubscriptionService.getMyMonthlySubscription(myUser.getId()));
     }
-
+    // By basil
+    // this end point for subscribing
     @PostMapping("/subscribe/{subscriptionPackageId}")
     public ResponseEntity subscribe(@AuthenticationPrincipal MyUser myUser , @PathVariable Integer subscriptionPackageId){
         monthlySubscriptionService.subscribe(myUser.getId(),subscriptionPackageId);
         return ResponseEntity.status(201).body(new ApiResponse("subscribed done successfully"));
     }
+
+    // By basil
+    // this end point for renew subscription
     @PostMapping("/renew-subscription/{subscriptionPackageId}")
     public ResponseEntity renewSubscription(@AuthenticationPrincipal MyUser myUser , @PathVariable Integer subscriptionPackageId){
         monthlySubscriptionService.renewSubscribe(myUser.getId(),subscriptionPackageId);

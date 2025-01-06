@@ -27,7 +27,7 @@ public class MonthlyDrawParticipant {
     @Column(nullable = false)
     private Integer pointsUsed;
 
-    @Column(updatable = false, insertable = false)
+    @Column(updatable = false)
     private LocalDate signUpDate = LocalDate.now();
 
     @ManyToOne

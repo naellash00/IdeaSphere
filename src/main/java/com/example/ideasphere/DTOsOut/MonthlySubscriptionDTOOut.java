@@ -17,7 +17,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class MonthlySubscriptionDTOOut {
 
-    private Integer id;
 
     private LocalDate startDate;
     private LocalDate endDate;

@@ -13,7 +13,6 @@ import java.util.Set;
 public class IndividualCompetitionDTOOut {
 
     // Competition fields
-    private Integer competitionId;
     private String title;
     private String description;
     private String votingMethod;

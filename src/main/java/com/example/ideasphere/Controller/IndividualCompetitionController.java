@@ -68,7 +68,13 @@ public class IndividualCompetitionController {
         individualCompetitionService.addPayment(myUser.getId(), individualCompetitionPaymentDTOIn);
         return ResponseEntity.status(200).body(new ApiResponse("Competition added payment successfully."));
     }
-
+    @PutMapping("/cancel-competition/{individualCompetitionId}")
+    public ResponseEntity<ApiResponse> cancelCompetition(
+            @AuthenticationPrincipal MyUser myUser,
+            @PathVariable Integer individualCompetitionId){
+        individualCompetitionService.cancelCompetition(myUser.getId(), individualCompetitionId);
+        return ResponseEntity.status(200).body(new ApiResponse("Competition canceled Successfully."));
+    }
     @PutMapping("/extend-competition")
     public ResponseEntity<ApiResponse> extendCompetition(
             @AuthenticationPrincipal MyUser myUser,

@@ -240,6 +240,31 @@ public class SubmissionService { //Naelah
 
         competitionRepository.save(competition);
         companyCompetitionRepository.save(companyCompetition);
+        String prize = (competition.getCompanyCompetition().getMonetaryReward() != 0 ? competition.getCompanyCompetition().getMonetaryReward().toString() : "" )+"/"+ (!competition.getCompanyCompetition().getRewardType().equalsIgnoreCase("Financial") ? "Interview":"");
+
+        emailSender.sendEmail(
+                submission.getParticipant().getUser().getEmail(),
+                "Congratulations: You Have Won the Competition!",
+                "<html>" +
+                        "<body style='background-color: #D4EBF8; font-size: 16px; color: #1F509A; font-family: Arial, sans-serif;'>" +
+                        "<div style='background-color: #ffffff; border: 2px solid #1F509A; padding: 20px; border-radius: 5px;'>" +
+                        "<p style='font-size: 18px; font-weight: bold; color: #0A3981;'>Dear " + submission.getParticipant().getUser().getName() + ",</p>" +
+                        "<p>We are thrilled to inform you that you have emerged as the <strong style='color: #E38E49;'>winner</strong> of the following competition:</p>" +
+                        "<ul style='list-style-type: square; padding-left: 20px; color: #1F509A;'>" +
+                        "<li><strong>Competition Name:</strong> " + competition.getTitle() + "</li>" +
+                        "<li><strong>Organizer:</strong> " + competition.getCompanyCompetition().getCompanyOrganizer().getCompanyName() + "</li>" +
+                        "<li><strong>Prize:</strong> " + prize + "</li>" +
+                        "</ul>" +
+                        "<p style='color: #0A3981;'>This achievement highlights your exceptional skills and creativity. We hope this victory inspires you to continue striving for excellence in all your endeavors.</p>" +
+                        "<p>If you have any questions or require additional information, please feel free to contact us at <a href='mailto:support@ideaSphere.com' style='color: #E38E49;'>support@ideaSphere.com</a>.</p>" +
+                        "<p style='color: #1F509A;'>Once again, congratulations on this remarkable achievement. We look forward to seeing your continued success in the future.</p>" +
+                        "<p style='margin-top: 20px; color: #0A3981;'>Best regards,</p>" +
+                        "<p style='font-weight: bold; color: #E38E49;'>The Idea Sphere Team</p>" +
+                        "</div>" +
+                        "</body>" +
+                        "</html>"
+        );
+
     }
 
     // Not tested
@@ -277,6 +302,29 @@ public class SubmissionService { //Naelah
 
         competitionRepository.save(competition);
         individualCompetitionRepository.save(individualCompetition);
+
+        emailSender.sendEmail(
+                submission.getParticipant().getUser().getEmail(),
+                "Congratulations: You Have Won the Competition!",
+                "<html>" +
+                        "<body style='background-color: #D4EBF8; font-size: 16px; color: #1F509A; font-family: Arial, sans-serif;'>" +
+                        "<div style='background-color: #ffffff; border: 2px solid #1F509A; padding: 20px; border-radius: 5px;'>" +
+                        "<p style='font-size: 18px; font-weight: bold; color: #0A3981;'>Dear " + submission.getParticipant().getUser().getName() + ",</p>" +
+                        "<p>We are thrilled to inform you that you have emerged as the <strong style='color: #E38E49;'>winner</strong> of the following competition:</p>" +
+                        "<ul style='list-style-type: square; padding-left: 20px; color: #1F509A;'>" +
+                        "<li><strong>Competition Name:</strong> " + competition.getTitle() + "</li>" +
+                        "<li><strong>Organizer:</strong> " + competition.getIndividualCompetition().getIndividualOrganizer().getMyUser().getName() + "</li>" +
+                        "<li><strong>Prize:</strong> " +  competition.getIndividualCompetition().getMonetaryReward() + "</li>" +
+                        "</ul>" +
+                        "<p style='color: #0A3981;'>This achievement highlights your exceptional skills and creativity. We hope this victory inspires you to continue striving for excellence in all your endeavors.</p>" +
+                        "<p>If you have any questions or require additional information, please feel free to contact us at <a href='mailto:support@ideaSphere.com' style='color: #E38E49;'>support@ideaSphere.com</a>.</p>" +
+                        "<p style='color: #1F509A;'>Once again, congratulations on this remarkable achievement. We look forward to seeing your continued success in the future.</p>" +
+                        "<p style='margin-top: 20px; color: #0A3981;'>Best regards,</p>" +
+                        "<p style='font-weight: bold; color: #E38E49;'>The Idea Sphere Team</p>" +
+                        "</div>" +
+                        "</body>" +
+                        "</html>"
+        );
     }
 
     public List<SubmissionOutDTO> companyViewMyCompetitionSubmissions(Integer company_organizer_id, Integer competition_id) {

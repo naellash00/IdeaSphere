@@ -22,7 +22,7 @@ public class CompetitionPaymentService {
         MyUser myUser = authRepository.findMyUserById(user_id);
         if (myUser == null) throw new ApiException("Error: user not found");
 
-        return competitionPaymentRepository.findCompetitionPaymentByCompetition_CompanyCompetitionId(user_id);
+        return competitionPaymentRepository.findCompetitionPaymentByCompetition_CompanyCompetitionCompanyOrganizerId(user_id);
     }
 
     public List<CompetitionPayment> getAllMyCompetitionPayment_Individual(Integer user_id){

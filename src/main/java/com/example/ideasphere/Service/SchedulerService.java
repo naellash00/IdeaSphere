@@ -52,6 +52,29 @@ public class SchedulerService {
                 }
                 competition.setStatus("Winner Selection in Progress");
                 competitionRepository.save(competition);
+
+                MyUser myUser = competition.getCompanyCompetition() != null?competition.getCompanyCompetition().getCompanyOrganizer().getMyUser() : competition.getIndividualCompetition().getIndividualOrganizer().getMyUser();
+                emailSender.sendEmail(
+                        myUser.getEmail(),
+                        "Action Required: Select Winner for Competition",
+                        "<html>" +
+                                "<body style='background-color: #D4EBF8; font-size: 16px; color: #1F509A; font-family: Arial, sans-serif;'>" +
+                                "<div style='background-color: #ffffff; border: 2px solid #1F509A; padding: 20px; border-radius: 5px;'>" +
+                                "<p style='font-size: 18px; font-weight: bold; color: #0A3981;'>Dear " + myUser.getName() + ",</p>" +
+                                "<p>We would like to inform you that your competition has successfully concluded. Immediate action is required to select the winner for the following competition:</p>" +
+                                "<ul style='list-style-type: square; padding-left: 20px; color: #1F509A;'>" +
+                                "<li><strong>Competition Name:</strong> " + competition.getTitle() + "</li>" +
+                                "<li><strong>End Date:</strong> " + competition.getEndDate() + "</li>" +
+                                "</ul>" +
+                                "<p style='color: #0A3981;'>As the organizer, it is your responsibility to review the submissions and declare the winner. Please note that if no action is taken within the next <strong style='color: #E38E49;'>7 days</strong>, the winner selection process will be automatically transitioned to a <strong>public vote</strong>.</p>" +
+                                "<p>If you require assistance or have any questions, feel free to contact us at <a href='mailto:support@ideaSphere.com' style='color: #E38E49;'>support@ideaSphere.com</a>.</p>" +
+                                "<p style='color: #1F509A;'>Thank you for organizing this competition and for your prompt attention to this matter.</p>" +
+                                "<p style='margin-top: 20px; color: #0A3981;'>Best regards,</p>" +
+                                "<p style='font-weight: bold; color: #E38E49;'>The Idea Sphere Team</p>" +
+                                "</div>" +
+                                "</body>" +
+                                "</html>"
+                );
             }else if(competition.getVotingMethod().equalsIgnoreCase("By Public Vote")){
 
                 if (competition.getSubmissions().isEmpty()){
@@ -206,6 +229,29 @@ public class SchedulerService {
             monthlyDraw.setMonthlyDrawParticipantWinner(randomParticipant.getParticipant());
             monthlyDraw.setStatus("Completed");
             monthlyDrawRepository.save(monthlyDraw);
+
+            MyUser myUser = randomParticipant.getParticipant().getUser();
+            emailSender.sendEmail(
+                    myUser.getEmail(),
+                    "Congratulations! You’ve Won the Monthly Draw Gift",
+                    "<html>" +
+                            "<body style='background-color: #D4EBF8; font-size: 16px; color: #1F509A; font-family: Arial, sans-serif;'>" +
+                            "<div style='background-color: #ffffff; border: 2px solid #1F509A; padding: 20px; border-radius: 5px;'>" +
+                            "<p style='font-size: 18px; font-weight: bold; color: #0A3981;'>Dear " + myUser.getName() + ",</p>" +
+                            "<p>We are thrilled to announce that you are the lucky winner of our <strong>Monthly Draw Gift</strong>!</p>" +
+                            "<p>Here are the details of your prize:</p>" +
+                            "<ul style='list-style-type: square; padding-left: 20px; color: #1F509A;'>" +
+                            "<li><strong>Monthly draw Name:</strong> " + monthlyDraw.getName() + "</li>" +
+                            "<li><strong>Prize:</strong> " + monthlyDraw.getPrize() + "</li>" +
+                            "</ul>" +
+                            "<p style='color: #0A3981;'>To claim your prize, please contact us at <a href='mailto:support@ideaSphere.com' style='color: #E38E49;'>support@ideaSphere.com</a> within the next <strong style='color: #E38E49;'>7 days</strong>. Be sure to provide your contact information and any identification required for verification.</p>" +
+                            "<p style='color: #1F509A;'>Congratulations once again! We are delighted to celebrate your achievement.</p>" +
+                            "<p style='margin-top: 20px; color: #0A3981;'>Best regards,</p>" +
+                            "<p style='font-weight: bold; color: #E38E49;'>The Idea Sphere Team</p>" +
+                            "</div>" +
+                            "</body>" +
+                            "</html>"
+            );
         }
     }
 }

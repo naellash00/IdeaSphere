@@ -12,7 +12,6 @@ import java.util.Set;
 public class CompanyCompetitionDTOOut {
 
     // Competition fields
-    private Integer competitionId;
     private String title;
     private String description;
     private String votingMethod;

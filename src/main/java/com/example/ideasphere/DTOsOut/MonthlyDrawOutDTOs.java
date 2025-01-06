@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class MonthlyDrawOutDTOs {
 
-    private Integer id;
 
     private String name;
 

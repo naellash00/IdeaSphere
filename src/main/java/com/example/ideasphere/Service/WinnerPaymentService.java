@@ -48,6 +48,10 @@ public class WinnerPaymentService { // Naelah
         competitionRepository.save(competition);
         companyCompetitionRepository.save(companyCompetition);
         winnerPaymentRepository.save(winnerPayment);
+
+
+
+
     }
 
     public void individualCompleteWinnerPaymentDetails(Integer competition_id, Integer submission_id) {

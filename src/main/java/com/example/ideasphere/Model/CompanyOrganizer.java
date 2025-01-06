@@ -42,6 +42,8 @@ public class CompanyOrganizer {
     @Column(nullable = false , unique = true)
     private String contactPhone;
 
+    private Integer countCompetitionCancellation = 0;
+
     @NotEmpty(message = "Error: contactPhone is empty")
     @Pattern(regexp = "Not Active|Active" , message = "Error: status must is Not Active or Active")
     @Column(nullable = false )

@@ -99,7 +99,6 @@ public class CompanyOrganizerService {
         companyOrganizerDTOOut.setUsername(myUser.getUsername());
         companyOrganizerDTOOut.setName(myUser.getName());
         companyOrganizerDTOOut.setEmail(myUser.getEmail());
-        companyOrganizerDTOOut.setRole(myUser.getRole());
         companyOrganizerDTOOut.setCompanyName(myUser.getCompanyOrganizer().getCompanyName());
         companyOrganizerDTOOut.setCommercialRecord(myUser.getCompanyOrganizer().getCommercialRecord());
         companyOrganizerDTOOut.setContactEmail(myUser.getCompanyOrganizer().getContactEmail());

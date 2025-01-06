@@ -24,6 +24,10 @@ public class CompetitionPayment {
     @Column(nullable = false)
     private Double amount;
 
+
+    @Pattern(regexp = "Refund|Payment" ,message = "Error:typePayment must be Refund|Payment")
+    private String typePayment ;
+
     @Column(nullable = false)
     private LocalDate paymentDate= LocalDate.now();
 

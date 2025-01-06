@@ -53,7 +53,8 @@ public class ConfigurationSecurity {
                         ,"/api/v1/submission/company/reject/feedback/request/{submission_id}"
                         ,"/api/v1/submission/company/select/winner/{competition_id}/{submission_id}"
                         ,"/api/v1/submission/company/view/my-competition/submissions/{competition_id}"
-                        ,"/api/v1/competition/company/get/my-competition/reviews/{competition_id}").hasAuthority("COMPANY")
+                        ,"/api/v1/competition/company/get/my-competition/reviews/{competition_id}"
+                        ,"/api/v1/company-competition/cancel-competition/{companyCompetitionId}").hasAuthority("COMPANY")
                 .requestMatchers(
                         "/api/v1/monthlyDraw/get-all-monthly-draws", "/api/v1/monthlyDraw/eligible","/api/v1/monthlyDraw/findMonthlyDrawByPrize/{prize}",
                         "/api/v1/monthlyDraw/findDrawsByName/{name}","/api/v1/monthlyDraw/findMonthlyDrawWinner/{drawId}",
@@ -83,7 +84,8 @@ public class ConfigurationSecurity {
                         ,"/api/v1/submission/individual/select/winner/{competition_id}/{submission_id}"
                         ,"/api/v1/submission/individual/view/my-competition/submissions/{competition_id}"
                         ,"/api/v1/competition/individual/get/my-competition/reviews/{competition_id}"
-                        ,"/api/v1/individual-competition/select/winner/").hasAuthority("INDIVIDUAL")
+                        ,"/api/v1/individual-competition/select/winner/"
+                        ,"/api/v1/individual-competition/cancel-competition/{individualCompetitionId}").hasAuthority("INDIVIDUAL")
                 .requestMatchers(
                         "/api/v1/subscription-package/active-subscription-package/{id}"
                         ,"/api/v1/subscription-package/add-subscription-package"

@@ -25,6 +25,9 @@ public class CompetitionService {
         return competitionRepository.findAll().stream().toList();
     }
 
+
+
+
     public List<CompetitionOutDTO> recommendCompetitions(Integer participant_id) {
         Participant participant = participantRepository.findParticipantById(participant_id);
         List<Category> participantCategories = new ArrayList<>(participant.getCategories());

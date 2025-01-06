@@ -16,15 +16,18 @@ public class AdminController {
     private final AdminService adminService;
 
 
+    // by Basil
+    // this for active company account after review the account information
     @PutMapping("/active-company-user/{id}")
     public ResponseEntity active(@PathVariable Integer id){
         adminService.activeCompany(id);
         return ResponseEntity.ok().body(new ApiResponse("Company Organizer is Active"));
     }
-
+    // by Basil
+    // this for detective company account
     @PutMapping("/detective-company-user/{id}")
     public ResponseEntity detectiveCompany(@PathVariable Integer id){
         adminService.detectiveCompany(id);
-        return ResponseEntity.ok().body(new ApiResponse("Company Organizer is Detectived"));
+        return ResponseEntity.ok().body(new ApiResponse("Company Organizer is Detective"));
     }
 }

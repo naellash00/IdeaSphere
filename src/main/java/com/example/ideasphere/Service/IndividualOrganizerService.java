@@ -43,11 +43,9 @@ public class IndividualOrganizerService {
     }
     public IndividualOrganizerDTOOut ConvertDTOOut(MyUser myUser){
         IndividualOrganizerDTOOut individualOrganizerDTOOut = new IndividualOrganizerDTOOut();
-        individualOrganizerDTOOut.setId(myUser.getId());
         individualOrganizerDTOOut.setUsername(myUser.getUsername());
         individualOrganizerDTOOut.setName(myUser.getName());
         individualOrganizerDTOOut.setEmail(myUser.getEmail());
-        individualOrganizerDTOOut.setRole(myUser.getRole());;
         individualOrganizerDTOOut.setPhoneNumber(myUser.getIndividualOrganizer().getPhoneNumber());
 
         return individualOrganizerDTOOut;

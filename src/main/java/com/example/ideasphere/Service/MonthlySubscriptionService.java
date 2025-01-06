@@ -72,7 +72,7 @@ public class MonthlySubscriptionService {
         boolean checkActiveSubscription = false;
         for (MonthlySubscription p : previousSubscriptions){
 
-            if (p.getEndDate().isBefore(today)) {
+            if (p.getEndDate().isAfter(today)) {
                 checkActiveSubscription = true;
                 break;
             }
@@ -154,6 +154,6 @@ public class MonthlySubscriptionService {
 
     public MonthlySubscriptionDTOOut convertDTO(MonthlySubscription monthlySubscription){
 
-        return new MonthlySubscriptionDTOOut(monthlySubscription.getId(), monthlySubscription.getStartDate(),monthlySubscription.getEndDate(),monthlySubscription.getAmount(),monthlySubscription.getIndividualOrganizer() != null? monthlySubscription.getIndividualOrganizer().getMyUser().getUsername():monthlySubscription.getCompanyOrganizer().getCompanyName() ,monthlySubscription.getSubscriptionPackage().getPackageName());
+        return new MonthlySubscriptionDTOOut( monthlySubscription.getStartDate(),monthlySubscription.getEndDate(),monthlySubscription.getAmount(),monthlySubscription.getIndividualOrganizer() != null? monthlySubscription.getIndividualOrganizer().getMyUser().getUsername():monthlySubscription.getCompanyOrganizer().getCompanyName() ,monthlySubscription.getSubscriptionPackage().getPackageName());
     }
 }

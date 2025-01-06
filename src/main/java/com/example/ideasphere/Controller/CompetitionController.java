@@ -17,6 +17,8 @@ public class CompetitionController {
     private final CompetitionService competitionService;
 
 
+    // By Basil
+    // get all competition
     @GetMapping("/get-all-competition")
     public ResponseEntity getAllCompetition() {
         return ResponseEntity.status(200).body(competitionService.getAllCompetition());
