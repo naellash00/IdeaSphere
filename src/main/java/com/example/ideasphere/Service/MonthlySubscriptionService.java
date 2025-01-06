@@ -1,6 +1,7 @@
 package com.example.ideasphere.Service;
 
 import com.example.ideasphere.ApiResponse.ApiException;
+import com.example.ideasphere.DTOsOut.MonthlySubscriptionDTOOut;
 import com.example.ideasphere.Model.MonthlySubscription;
 import com.example.ideasphere.Model.MyUser;
 import com.example.ideasphere.Model.SubscriptionPackage;
@@ -11,8 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,17 +28,24 @@ public class MonthlySubscriptionService {
 
 
 
-    public List<MonthlySubscription> getAllMonthlySubscription(){
-        return monthlySubscriptionRepository.findAll().stream().toList();
+    public List<MonthlySubscriptionDTOOut> getAllMonthlySubscription(){
+        List<MonthlySubscription> monthlySubscriptions = monthlySubscriptionRepository.findAll().stream().toList();
+        return monthlySubscriptions.stream()
+                .map(this::convertDTO)
+                .collect(Collectors.toList());
     }
 
-    public List<MonthlySubscription> getMyMonthlySubscription(Integer userId){
+    public List<MonthlySubscriptionDTOOut> getMyMonthlySubscription(Integer userId){
         MyUser myUser = authRepository.findMyUserById(userId);
         if (myUser == null) throw new ApiException("Error: user not found");
 
         Set<MonthlySubscription> monthlySubscriptions = myUser.getCompanyOrganizer() != null ? myUser.getCompanyOrganizer().getMonthlySubscriptions() : myUser.getIndividualOrganizer().getMonthlySubscriptions();
 
-        return monthlySubscriptions.stream().toList();
+        return monthlySubscriptions.stream()
+                .map(this::convertDTO)
+                .collect(Collectors.toList());
+
+
     }
 
     public void subscribe(Integer userid , Integer SubscriptionPackageId){
@@ -103,21 +114,25 @@ public class MonthlySubscriptionService {
 
         LocalDate today = LocalDate.now();
 
-        MonthlySubscription activeMonthlySubscription = new MonthlySubscription();
+        List<MonthlySubscription> activeMonthlySubscriptions = new ArrayList<>();
 
 
         for (MonthlySubscription p : previousSubscriptions){
 
             if (!p.getEndDate().isBefore(today)) {
-                activeMonthlySubscription = p;
+                activeMonthlySubscriptions.add(p);
             }
         }
 
         LocalDate startDate = today;
         LocalDate endDate = today.plusMonths(subscriptionPackage.getCountMonth());
 
-        if (!activeMonthlySubscription.equals(new MonthlySubscription())) {
-            startDate = activeMonthlySubscription.getEndDate().plusDays(1);
+        if (!activeMonthlySubscriptions.isEmpty()) {
+            // make sort here get last active end date
+            MonthlySubscription lastActiveSubscription = activeMonthlySubscriptions.stream()
+                    .max(Comparator.comparing(MonthlySubscription::getEndDate))
+                    .orElseThrow();
+            startDate = lastActiveSubscription.getEndDate().plusDays(1);
             endDate = startDate.plusMonths(subscriptionPackage.getCountMonth());
         }
 
@@ -135,5 +150,10 @@ public class MonthlySubscriptionService {
         monthlySubscription.setSubscriptionPackage(subscriptionPackage);
 
         monthlySubscriptionRepository.save(monthlySubscription);
+    }
+
+    public MonthlySubscriptionDTOOut convertDTO(MonthlySubscription monthlySubscription){
+
+        return new MonthlySubscriptionDTOOut(monthlySubscription.getId(), monthlySubscription.getStartDate(),monthlySubscription.getEndDate(),monthlySubscription.getAmount(),monthlySubscription.getIndividualOrganizer() != null? monthlySubscription.getIndividualOrganizer().getMyUser().getUsername():monthlySubscription.getCompanyOrganizer().getCompanyName() ,monthlySubscription.getSubscriptionPackage().getPackageName());
     }
 }

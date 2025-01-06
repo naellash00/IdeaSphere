@@ -39,7 +39,6 @@ public class ConfigurationSecurity {
                 .requestMatchers("/api/v1/company-organizer/register","/api/v1/participant/register","/api/v1/individual-organizer/register" , "/api/v1/competition/get-all-competition", "/api/v1/company-competition/get-all-competition").permitAll()
                 .requestMatchers("/api/v1/company-organizer/get-profile","/api/v1/individual-competition/get-all-competition"
                         ,"/api/v1/subscription-package/get-subscription-package-by-id/{id}"
-                        ,"/api/v1/subscription-package/get-all-subscription-package"
                         ,"/api/v1/company-organizer/update-profile"
                         ,"/api/v1/company-competition/get-my-competitions"
                         ,"/api/v1/company-competition/add-competition-payment"
@@ -50,9 +49,6 @@ public class ConfigurationSecurity {
                         ,"/api/v1/company-competition/create-competition-financial-interview"
                         ,"/api/v1/company-competition/create-competition-interview"
                         ,"/api/v1/competition-payment/get-my-competition-payment"
-                        ,"/api/v1/monthly-subscription/get-my-monthly-subscription"
-                        ,"/api/v1/monthly-subscription/renew-subscription/{subscriptionPackageId}"
-                        ,"/api/v1/monthly-subscription/subscribe/{subscriptionPackageId}"
                         ,"/api/v1/submission/company/accept/feedback/request/{submission_id}"
                         ,"/api/v1/submission/company/reject/feedback/request/{submission_id}"
                         ,"/api/v1/submission/company/select/winner/{competition_id}/{submission_id}"
@@ -76,7 +72,6 @@ public class ConfigurationSecurity {
 
                 .requestMatchers(
                         "/api/v1/subscription-package/get-subscription-package-by-id/{id}"
-                        ,"/api/v1/subscription-package/get-all-subscription-package"
                         ,"/api/v1/individual-organizer/get-profile","/api/v1/individual-organizer/send-complain"
                 ,"/api/v1/individual-organizer/update",
                         "/api/v1/individual-competition/extend-competition","/api/v1/individual-competition/add-competition-payment",
@@ -87,13 +82,13 @@ public class ConfigurationSecurity {
                         ,"/api/v1/submission/individual/reject/feedback/request/{submission_id}"
                         ,"/api/v1/submission/individual/select/winner/{competition_id}/{submission_id}"
                         ,"/api/v1/submission/individual/view/my-competition/submissions/{competition_id}"
-                        ,"/api/v1/competition/individual/get/my-competition/reviews/{competition_id}").hasAuthority("INDIVIDUAL")
+                        ,"/api/v1/competition/individual/get/my-competition/reviews/{competition_id}"
+                        ,"/api/v1/individual-competition/select/winner/").hasAuthority("INDIVIDUAL")
                 .requestMatchers(
                         "/api/v1/subscription-package/active-subscription-package/{id}"
                         ,"/api/v1/subscription-package/add-subscription-package"
                         ,"/api/v1/subscription-package/deactivated-subscription-package/{id}"
                         ,"/api/v1/subscription-package/get-subscription-package-by-id/{id}"
-                        ,"/api/v1/subscription-package/get-all-subscription-package"
                         ,"/api/v1/subscription-package/update-subscription-package"
                         ,"/api/v1/monthly-subscription/get-all-monthly-subscription"
                         ,"/api/v1/category/upload-category"
@@ -103,6 +98,10 @@ public class ConfigurationSecurity {
                         "/api/v1/monthly-draw-participant/participants/{drawId}"
                         ,"api/v1/admin/active-company-user/{id}"
                         ,"api/v1/admin/detective-company-user/{id}").hasAuthority("ADMIN")
+                .requestMatchers("/api/v1/subscription-package/get-all-subscription-package").hasAnyAuthority("ADMIN","INDIVIDUAL","COMPANY")
+                .requestMatchers("/api/v1/monthly-subscription/subscribe/{subscriptionPackageId}"
+                        ,"/api/v1/monthly-subscription/renew-subscription/{subscriptionPackageId}"
+                        ,"/api/v1/monthly-subscription/get-my-monthly-subscription").hasAnyAuthority("INDIVIDUAL","COMPANY")
                 .anyRequest().hasAuthority("ADMIN")
                 .and()
                 .logout().logoutUrl("/api/v1/logout")

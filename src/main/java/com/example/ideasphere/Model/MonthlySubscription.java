@@ -20,8 +20,8 @@ public class MonthlySubscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private LocalDate StartDate;
-    private LocalDate EndDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     private Double amount;
 

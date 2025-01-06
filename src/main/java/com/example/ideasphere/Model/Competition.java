@@ -56,11 +56,6 @@ public class Competition {
     @Column(nullable = false )
     private Integer maxParticipants;
 
-    @NotNull(message = "Error: extendNumber is empty")
-    @PositiveOrZero(message = "Error: extendNumber must be positive or zero")
-    @Column(scale = 0 , nullable = false)
-    private Integer extendNumber = 0;
-
     @PositiveOrZero(message = "Error: extendNumber must be positive or zero")
     private Integer countExtend = 0;
 

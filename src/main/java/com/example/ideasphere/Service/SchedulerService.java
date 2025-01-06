@@ -116,10 +116,10 @@ public class SchedulerService {
 
             if (topSubmissions.size() > 1) {
                 // Tie detected
-                competition.setStatus("Vote Tie - Organizer Decision");
-                for (Submission s : topSubmissions){
-                    s.setWinnerEqualedVotes(true);
-                }
+                Random random = new Random();
+                Submission winner = topSubmissions.get(random.nextInt(topSubmissions.size()));
+                competition.setStatus("Completed");
+                competition.setParticipantWinner(winner.getParticipant());
                 competitionRepository.save(competition);
             } else {
                 // Single winner

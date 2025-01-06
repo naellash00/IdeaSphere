@@ -48,6 +48,8 @@ public class IndividualCompetitionService {
     private final WinnerPaymentRepository winnerPaymentRepository;
 
     private final CompetitionPaymentRepository competitionPaymentRepository;
+    @Autowired
+    private MonthlySubscriptionRepository monthlySubscriptionRepository;
 
     public List<IndividualCompetitionDTOOut> getAllIndividualCompetitions() {
         List<IndividualCompetition> individualCompetitions = individualCompetitionRepository.findAll();
@@ -139,7 +141,7 @@ public class IndividualCompetitionService {
         if (user == null){
             throw new ApiException("user not found");
         }
-        List<IndividualCompetition> individualCompetitions = individualCompetitionRepository.findIndividualCompetitionByCompetition_Id(user_id);
+        List<IndividualCompetition> individualCompetitions = individualCompetitionRepository.findIndividualCompetitionByIndividualOrganizerId(user_id);
 
         if (individualCompetitions.isEmpty()) {
             return Collections.emptyList();
@@ -179,6 +181,13 @@ public class IndividualCompetitionService {
             throw new ApiException("user not found");
         }
 
+
+        if (user.getIndividualOrganizer().getIndividualCompetitions().size() >=10 ){
+
+            LocalDate today = LocalDate.now();
+            List<MonthlySubscription> monthlySubscriptions = monthlySubscriptionRepository.findMonthlySubscriptionByEndDateAfterAndIndividualOrganizerId(today , user.getId());
+            if (monthlySubscriptions.isEmpty()) throw new ApiException("Error: you have the maximum of creating competition. subscribe to Monthly Subscription to create more ");
+        }
         Competition competition = new Competition();
         competition.setTitle(individualCompetitionDTOsIN.getTitle());
         competition.setDescription(individualCompetitionDTOsIN.getDescription());
@@ -224,7 +233,7 @@ public class IndividualCompetitionService {
 
         if (individualCompetition == null) throw new ApiException("Error: individual Competition not found");
 
-        if (!myUser.getCompanyOrganizer().getId().equals(individualCompetition.getIndividualOrganizer().getId())) throw new ApiException("Error: this Competition not belong to you");
+        if (!myUser.getIndividualOrganizer().getId().equals(individualCompetition.getIndividualOrganizer().getId())) throw new ApiException("Error: this Competition not belong to you");
 
         String status =  individualCompetition.getCompetition().getStatus();
         // check status

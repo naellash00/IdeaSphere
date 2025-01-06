@@ -25,11 +25,8 @@ public class CompanyCompetitionService {
     private final CompetitionRepository competitionRepository;
     private final AuthRepository authRepository;
     private final CategoryRepository categoryRepository;
-    private final ParticipantRepository participantRepository;
     private final CompetitionPaymentRepository competitionPaymentRepository;
-    private final SubmissionRepository submissionRepository;
-    private final WinnerPaymentService winnerPaymentService;
-    private final WinnerPaymentRepository winnerPaymentRepository;
+    private final MonthlySubscriptionRepository monthlySubscriptionRepository;
 
 
     public List<CompanyCompetitionDTOOut> getAllCompanyCompetition(){
@@ -52,10 +49,16 @@ public class CompanyCompetitionService {
 
     public void createCompetitionFinancialInterview(Integer userId, CompanyCompetitionFinancialInterviewDTOIn competitionDTO) {
         MyUser myUser = authRepository.findMyUserById(userId);
-
         if (myUser == null) throw new ApiException("Error: user not found");
 
         if (!myUser.getCompanyOrganizer().getStatus().equalsIgnoreCase("Active")) throw new ApiException("Error : CompanyOrganizer not active");
+
+        if (myUser.getCompanyOrganizer().getCompanyCompetitions().size() >=10 ){
+
+            LocalDate today = LocalDate.now().minusDays(1);
+            List<MonthlySubscription> monthlySubscriptions = monthlySubscriptionRepository.findMonthlySubscriptionByEndDateAfterAndCompanyOrganizerId(today , myUser.getId());
+            if (monthlySubscriptions.isEmpty()) throw new ApiException("Error: you have the maximum of creating competition. subscribe to Monthly Subscription to create more ");
+        }
 
         // validation check Category Exist
         checkCategoryExist(competitionDTO.getCategories());
@@ -86,9 +89,18 @@ public class CompanyCompetitionService {
     public void createCompetitionInterview(Integer userId, CompanyCompetitionInterviewDTOIn competitionDTO) {
         MyUser myUser = authRepository.findMyUserById(userId);
 
+
         if (myUser == null) throw new ApiException("Error: user not found");
 
         if (!myUser.getCompanyOrganizer().getStatus().equalsIgnoreCase("Active")) throw new ApiException("Error : CompanyOrganizer not active");
+
+
+        if (myUser.getCompanyOrganizer().getCompanyCompetitions().size() >=10 ){
+
+            LocalDate today = LocalDate.now().minusDays(1);
+            List<MonthlySubscription> monthlySubscriptions = monthlySubscriptionRepository.findMonthlySubscriptionByEndDateAfterAndCompanyOrganizerId(today , myUser.getId());
+            if (monthlySubscriptions.isEmpty()) throw new ApiException("Error: you have the maximum of creating competition. subscribe to Monthly Subscription to create more ");
+        }
 
         // validation check Category Exist
         checkCategoryExist(competitionDTO.getCategories());
@@ -121,6 +133,14 @@ public class CompanyCompetitionService {
         if (myUser == null) throw new ApiException("Error: user not found");
 
         if (!myUser.getCompanyOrganizer().getStatus().equalsIgnoreCase("Active")) throw new ApiException("Error : CompanyOrganizer not active");
+
+
+        if (myUser.getCompanyOrganizer().getCompanyCompetitions().size() >=10 ){
+
+            LocalDate today = LocalDate.now().minusDays(1);
+            List<MonthlySubscription> monthlySubscriptions = monthlySubscriptionRepository.findMonthlySubscriptionByEndDateAfterAndCompanyOrganizerId(today , myUser.getId());
+            if (monthlySubscriptions.isEmpty()) throw new ApiException("Error: you have the maximum of creating competition. subscribe to Monthly Subscription to create more ");
+        }
         // validation check Category Exist
         checkCategoryExist(competitionDTO.getCategories());
 
@@ -157,6 +177,16 @@ public class CompanyCompetitionService {
         if (myUser == null) throw new ApiException("Error: user not found");
 
         if (!myUser.getCompanyOrganizer().getStatus().equalsIgnoreCase("Active")) throw new ApiException("Error : CompanyOrganizer not active");
+
+
+
+        if (myUser.getCompanyOrganizer().getCompanyCompetitions().size() >=10 ){
+
+            LocalDate today = LocalDate.now().minusDays(1);
+            List<MonthlySubscription> monthlySubscriptions = monthlySubscriptionRepository.findMonthlySubscriptionByEndDateAfterAndCompanyOrganizerId(today , myUser.getId());
+            if (monthlySubscriptions.isEmpty()) throw new ApiException("Error: you have the maximum of creating competition. subscribe to Monthly Subscription to create more ");
+        }
+
 
         // validation check Category Exist
         checkCategoryExist(competitionDTO.getCategories());
