@@ -25,7 +25,6 @@ IdeaSphere is a dedicated platform that empowers individuals to showcase their c
 - **نظام التصويت**: يوفر طريقة عادلة وواضحة لتحديد الفائزين من خلال تصويت الجمهور أو اختيار المنظم.
 - **الإشعارات**: تبقي المستخدمين على اطلاع بآخر التحديثات والمواعيد النهائية وإعلانات النتائج.
 - **فئات متنوعة**: تدعم مجموعة واسعة من أنواع المسابقات لتلبي مختلف المهارات والاهتمامات.
-- 
   ---
 ### Links
 
@@ -43,62 +42,86 @@ IdeaSphere is a dedicated platform that empowers individuals to showcase their c
 
 ![Use Case Diagram](https://cdn.discordapp.com/attachments/1321830373256335403/1325964561186164766/ideaSphereUseCase.drawio.png?ex=677db43a&is=677c62ba&hm=db0d9c750d1284664d39951e937a190b0a289b3b464040db2fb2f33d58abb08a&)
 
+---
+
+## Summary
+
+- **Total Endpoints**: 41
+- **Controllers**: 8
 
 ---
 
 ## Endpoints by Controller
 
-### CompetitionController
+### CompanyCompetitionController
 
-1. **GET** `/get/recommend/competitions` - Recommend competitions to a participant based on their profile. *(Naelah)*
-2. **PUT** `/add-review/{competition_id}` - Add a review for a specific competition. *(Naelah)*
-3. **GET** `/company/get/my-competition/reviews/{competition_id}` - Get reviews for a competition organized by a company. *(Naelah)*
-4. **GET** `/individual/get/my-competition/reviews/{competition_id}` - Get reviews for a competition organized by an individual. *(Naelah)*
+1. **GET** `/get-all-competition` - Get all competitions for Company Competition.
+2. **GET** `/get-my-competitions` - Get competitions for the authenticated company organizer.
+3. **POST** `/create-competition-financial-interview` - Create a competition with financial and interview reward types.
+4. **POST** `/create-competition-interview` - Create a competition with an interview reward type.
+5. **POST** `/create-competition-financial-by-vote` - Create a competition with a financial reward and winner selection by vote.
+6. **POST** `/create-competition-financial-by-organizer` - Create a competition with a financial reward and winner selection by the organizer.
+7. **POST** `/add-competition-payment` - Pay monetary reward to start the competition.
+8. **PUT** `/extend-competition` - Extend the competition dates and participant numbers.
+9. **PUT** `/update-competition` - Update competition details.
+10. **PUT** `/cancel-competition/{companyCompetitionId}` - Cancel a competition and return payment if applicable.
 
-**Total**: 4 endpoints
+**Total**: 10 endpoints
 
----
+### CompanyOrganizerController
 
-### ParticipantController
-
-1. **GET** `/get/my-achievements` - Retrieve achievements of the authenticated participant. *(Naelah)*
-2. **GET** `/get/my-feedbacks` - Retrieve feedbacks for the authenticated participant. *(Naelah)*
-3. **POST** `/send-complain` - Submit a complaint by a participant. *(Naelah)*
+1. **GET** `/get-profile` - Get the profile of the authenticated company organizer.
+2. **POST** `/register` - Register as a company organizer.
+3. **PUT** `/update-profile` - Update the profile of the authenticated company organizer.
 
 **Total**: 3 endpoints
 
----
+### CompetitionPaymentController
 
-### SubmissionController
-
-1. **POST** `/request-feedback/{submission_id}` - Request feedback on a specific submission. *(Naelah)*
-2. **PUT** `/company/accept/feedback/request/{submission_id}` - Company organizer accepts a feedback request. *(Naelah)*
-3. **PUT** `/company/reject/feedback/request/{submission_id}` - Company organizer rejects a feedback request. *(Naelah)*
-4. **PUT** `/individual/accept/feedback/request/{submission_id}` - Individual organizer accepts a feedback request. *(Naelah)*
-5. **PUT** `/individual/reject/feedback/request/{submission_id}` - Individual organizer rejects a feedback request. *(Naelah)*
-6. **PUT** `/company/select/winner/{competition_id}/{submission_id}` - Company organizer selects a competition winner. *(Naelah)*
-7. **PUT** `/individual/select/winner/{competition_id}/{submission_id}` - Individual organizer selects a competition winner. *(Naelah)*
-8. **GET** `/company/view/my-competition/submissions/{competition_id}` - Company organizer views submissions for their competition. *(Naelah)*
-9. **GET** `/individual/view/my-competition/submissions/{competition_id}` - Individual organizer views submissions for their competition. *(Naelah)*
-
-**Total**: 9 endpoints
-
----
-
-### VoteController
-
-1. **PUT** `/vote/{submission_id}` - Participant casts a vote on a specific submission. *(Naelah)*
+1. **GET** `/get-my-competition-payment` - Get all competition payments for the authenticated organizer.
 
 **Total**: 1 endpoint
 
+### MonthlySubscriptionController
+
+1. **GET** `/get-all-monthly-subscription` - Get all monthly subscriptions (Admin only).
+2. **GET** `/get-my-monthly-subscription` - Get the monthly subscriptions of the authenticated user.
+3. **POST** `/subscribe/{subscriptionPackageId}` - Subscribe to a package.
+4. **POST** `/renew-subscription/{subscriptionPackageId}` - Renew an existing subscription.
+
+**Total**: 4 endpoints
+
+### SubscriptionPackageController
+
+1. **GET** `/get-all-subscription-package` - Get all subscription packages.
+2. **GET** `/get-subscription-package-by-id/{id}` - Get a subscription package by its ID.
+3. **POST** `/add-subscription-package` - Add a new subscription package (Admin only).
+4. **PUT** `/update-subscription-package` - Update a subscription package (Admin only).
+5. **PUT** `/active-subscription-package/{id}` - Activate a subscription package (Admin only).
+6. **PUT** `/deactivated-subscription-package/{id}` - Deactivate a subscription package (Admin only).
+
+**Total**: 6 endpoints
+
+### AdminController
+
+1. **PUT** `/active-company-user/{id}` - Activate a company account after reviewing its information.
+2. **PUT** `/detective-company-user/{id}` - Deactivate a company account.
+
+**Total**: 2 endpoints
+
+### SchedulerService
+
+1. Automatically scheduled task: `updateExpiredCompetition` - Updates competitions that have expired.
+2. Automatically scheduled task: `updateStuckCompetition` - Updates competitions stuck in an unresolved state.
+3. Automatically scheduled task: `updateCompetitionUnderVote` - Updates competitions under public voting.
+
+**Total**: 3 tasks (automated, not API endpoints)
+
 ---
 
-### Summary
+**Grand Total (API Endpoints)**: 41
 
-- **CompetitionController**: 4 endpoints
-- **ParticipantController**: 3 endpoints
-- **SubmissionController**: 9 endpoints
-- **VoteController**: 1 endpoint
 
-**Grand Total (API Endpoints)**: 17
-**Controllers**: 4
+
+message.txt
+7 KB
