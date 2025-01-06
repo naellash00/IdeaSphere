@@ -69,7 +69,8 @@ public class ConfigurationSecurity {
                         ,"/api/v1/votes/vote/{submission_id}",
                         "/api/v1/monthly-draw-participant/add/{monthlyDrawId}"
                         ,"/api/v1/category/add/category/to/participant/{category_id}",
-                        "/api/v1/competition/add-review/{competition_id}").hasAuthority("PARTICIPANT")
+                        "/api/v1/competition/add-review/{competition_id}"
+                        ,"/api/v1/participant/get/my/profile").hasAuthority("PARTICIPANT")
 
                 .requestMatchers(
                         "/api/v1/subscription-package/get-subscription-package-by-id/{id}"

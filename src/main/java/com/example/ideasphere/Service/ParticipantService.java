@@ -6,6 +6,8 @@ import com.example.ideasphere.DTOsOut.*;
 import com.example.ideasphere.Model.*;
 import com.example.ideasphere.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +31,10 @@ public class ParticipantService { // Naelah
         List<ParticipantOutDTO> participantOutDTOS = new ArrayList<>();
         for (Participant p : participants) {
             List<CategoryOutDTO> categoryOutDTOS = new ArrayList<>();
-            List<AchievementOutDTO> achievementOutDTOS = new ArrayList<>();
             for (Category c : p.getCategories()) {
                 categoryOutDTOS.add(new CategoryOutDTO(c.getCategoryName()));
             }
-            ParticipantOutDTO participantOutDTO = new ParticipantOutDTO(p.getUser().getUsername(), p.getUser().getName(), p.getUser().getEmail(), categoryOutDTOS);
+            ParticipantOutDTO participantOutDTO = new ParticipantOutDTO(p.getUser().getUsername(), p.getUser().getName(), p.getUser().getEmail(), categoryOutDTOS, p.getPoints());
             participantOutDTOS.add(participantOutDTO);
         }
         return participantOutDTOS;
@@ -81,6 +82,26 @@ public class ParticipantService { // Naelah
 
         authRepository.save(user);
         participantRepository.save(oldParticipant);
+    }
+
+    public ParticipantOutDTO getMyProfile(Integer participant_id){
+        Participant participant = participantRepository.findParticipantById(participant_id);
+        if (participant == null) {
+            throw new ApiException("Participant not found");
+        }
+        ParticipantOutDTO participantOutDTO = new ParticipantOutDTO();
+        participantOutDTO.setUsername(participant.getUser().getUsername());
+        participantOutDTO.setName(participant.getUser().getName());
+        participantOutDTO.setEmail(participant.getUser().getEmail());
+
+        List<CategoryOutDTO> categoryOutDTOS = new ArrayList<>();
+        for(Category category : participant.getCategories()){
+            CategoryOutDTO categoryOutDTO = new CategoryOutDTO(category.getCategoryName());
+            categoryOutDTOS.add(categoryOutDTO);
+        }
+        participantOutDTO.setCategories(categoryOutDTOS);
+
+        return participantOutDTO;
     }
 
 

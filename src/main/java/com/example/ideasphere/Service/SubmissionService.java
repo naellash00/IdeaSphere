@@ -117,7 +117,7 @@ public class SubmissionService { //Naelah
         }
         submission.setFeedbackRequestStatus("Accepted");
         submission.setOrganizerFeedback(feedback);
-        sendFeedbackEmail(company_organizer_id, "Submission Feedback", feedback);
+        companySendFeedbackEmail(submission_id, "Submission Feedback", feedback);
 
         submissionRepository.save(submission);
     }
@@ -153,7 +153,7 @@ public class SubmissionService { //Naelah
         }
         submission.setFeedbackRequestStatus("Accepted");
         submission.setOrganizerFeedback(feedback);
-        sendFeedbackEmail(individual_organizer_id, "Submission Feedback", feedback);
+        individualSendFeedbackEmail(submission_id, "Submission Feedback", feedback);
 
         submissionRepository.save(submission);
     }
@@ -175,27 +175,97 @@ public class SubmissionService { //Naelah
         submissionRepository.save(submission);
     }
 
-    public void sendFeedbackEmail(Integer organizer_id, String subject, String text) {
-        MyUser user = authRepository.findMyUserById(organizer_id);
-        if (user == null) {
-            throw new ApiException("organizer not found");
+//    public void sendFeedbackEmail(Integer submission_id, String subject, String text) {
+//       // MyUser user = authRepository.findMyUserById(organizer_id);
+//        Submission submission = submissionRepository.findSubmissionById(submission_id);
+//        if (submission == null) {
+//            throw new ApiException("submission not found");
+//        }
+//        emailSender.sendEmail(
+//                submission.getParticipant().getUser().getEmail(),
+//                "Complaint Submission",
+//                "<html>" +
+//                        "<body style='background-color: #D4EBF8; font-size: 16px; color: #1F509A; font-family: Arial, sans-serif;'>" +
+//                        "<div style='background-color: #ffffff; border: 2px solid #1F509A; padding: 20px; border-radius: 5px;'>" +
+//                        "<p style='font-size: 18px; font-weight: bold; color: #0A3981;'>Complaint Submission</p>" +
+//                        "<p>Dear Support Team,</p>" +
+//                        "<p>A new complaint has been submitted with the following details:</p>" +
+//                        "<ul style='list-style-type: square; padding-left: 20px; color: #1F509A;'>" +
+//                        "<li><strong>Organizer's Name:</strong> " + user.getName() + "</li>" +
+//                        "<li><strong>Organizer's Email:</strong> " + user.getEmail() + "</li>" +
+//                        "<li><strong>Complaint Subject:</strong> " + subject + "</li>" +
+//                        "<li><strong>Complaint Message:</strong> " + text + "</li>" +
+//                        "</ul>" +
+//                        "<p style='color: #0A3981;'>Please review the complaint and address it at your earliest convenience. If you require any further details, feel free to reach out to the complainant.</p>" +
+//                        "<p style='margin-top: 20px; color: #0A3981;'>Best regards,</p>" +
+//                        "<p style='font-weight: bold; color: #E38E49;'>The Idea Sphere Team</p>" +
+//                        "</div>" +
+//                        "</body>" +
+//                        "</html>"
+//        );
+//    }
+public void companySendFeedbackEmail(Integer submission_id, String subject, String text) {
+    Submission submission = submissionRepository.findSubmissionById(submission_id);
+    if (submission == null) {
+        throw new ApiException("Submission not found");
+    }
+
+    String participantEmail = submission.getParticipant().getUser().getEmail();
+    String participantName = submission.getParticipant().getUser().getName();
+    String organizerName = submission.getCompetition().getCompanyCompetition().getCompanyOrganizer().getMyUser().getName();
+    String organizerEmail = submission.getCompetition().getCompanyCompetition().getCompanyOrganizer().getMyUser().getEmail();
+
+    emailSender.sendEmail(
+            participantEmail,
+            subject,
+            "<html>" +
+                    "<body style='background-color: #D4EBF8; font-size: 16px; color: #1F509A; font-family: Arial, sans-serif;'>" +
+                    "<div style='background-color: #ffffff; border: 2px solid #1F509A; padding: 20px; border-radius: 5px;'>" +
+                    "<p style='font-size: 18px; font-weight: bold; color: #0A3981;'>Feedback on Your Submission</p>" +
+                    "<p>Dear " + participantName + ",</p>" +
+                    "<p>You have received feedback on your submission:</p>" +
+                    "<ul style='list-style-type: square; padding-left: 20px; color: #1F509A;'>" +
+                    "<li><strong>Organizer's Name:</strong> " + organizerName + "</li>" +
+                    "<li><strong>Organizer's Email:</strong> " + organizerEmail + "</li>" +
+                    "<li><strong>Subject:</strong> " + subject + "</li>" +
+                    "<li><strong>Message:</strong> " + text + "</li>" +
+                    "</ul>" +
+                    "<p style='color: #0A3981;'>Thank you for being a valued participant.</p>" +
+                    "<p style='margin-top: 20px; color: #0A3981;'>Best regards,</p>" +
+                    "<p style='font-weight: bold; color: #E38E49;'>The Idea Sphere Team</p>" +
+                    "</div>" +
+                    "</body>" +
+                    "</html>"
+    );
+}
+
+    public void individualSendFeedbackEmail(Integer submission_id, String subject, String text) {
+        Submission submission = submissionRepository.findSubmissionById(submission_id);
+        if (submission == null) {
+            throw new ApiException("Submission not found");
         }
+
+        String participantEmail = submission.getParticipant().getUser().getEmail();
+        String participantName = submission.getParticipant().getUser().getName();
+        String organizerName = submission.getCompetition().getIndividualCompetition().getIndividualOrganizer().getMyUser().getName();
+        String organizerEmail = submission.getCompetition().getIndividualCompetition().getIndividualOrganizer().getMyUser().getEmail();
+
         emailSender.sendEmail(
-                "naellaohun@gmail.com",
-                "Complaint Submission",
+                participantEmail,
+                subject,
                 "<html>" +
                         "<body style='background-color: #D4EBF8; font-size: 16px; color: #1F509A; font-family: Arial, sans-serif;'>" +
                         "<div style='background-color: #ffffff; border: 2px solid #1F509A; padding: 20px; border-radius: 5px;'>" +
-                        "<p style='font-size: 18px; font-weight: bold; color: #0A3981;'>Complaint Submission</p>" +
-                        "<p>Dear Support Team,</p>" +
-                        "<p>A new complaint has been submitted with the following details:</p>" +
+                        "<p style='font-size: 18px; font-weight: bold; color: #0A3981;'>Feedback on Your Submission</p>" +
+                        "<p>Dear " + participantName + ",</p>" +
+                        "<p>You have received feedback on your submission:</p>" +
                         "<ul style='list-style-type: square; padding-left: 20px; color: #1F509A;'>" +
-                        "<li><strong>Organizer's Name:</strong> " + user.getName() + "</li>" +
-                        "<li><strong>Organizer's Email:</strong> " + user.getEmail() + "</li>" +
-                        "<li><strong>Complaint Subject:</strong> " + subject + "</li>" +
-                        "<li><strong>Complaint Message:</strong> " + text + "</li>" +
+                        "<li><strong>Organizer's Name:</strong> " + organizerName + "</li>" +
+                        "<li><strong>Organizer's Email:</strong> " + organizerEmail + "</li>" +
+                        "<li><strong>Subject:</strong> " + subject + "</li>" +
+                        "<li><strong>Message:</strong> " + text + "</li>" +
                         "</ul>" +
-                        "<p style='color: #0A3981;'>Please review the complaint and address it at your earliest convenience. If you require any further details, feel free to reach out to the complainant.</p>" +
+                        "<p style='color: #0A3981;'>Thank you for being a valued participant.</p>" +
                         "<p style='margin-top: 20px; color: #0A3981;'>Best regards,</p>" +
                         "<p style='font-weight: bold; color: #E38E49;'>The Idea Sphere Team</p>" +
                         "</div>" +
@@ -203,6 +273,7 @@ public class SubmissionService { //Naelah
                         "</html>"
         );
     }
+
 
     // Naelah
     public void companySelectWinner(Integer company_organizer_id, Integer competition_id, Integer submission_id) {

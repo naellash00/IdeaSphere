@@ -35,6 +35,11 @@ public class ParticipantController { // Naelah
         return ResponseEntity.status(200).body(new ApiResponse("Participant Updated Successfully"));
     }
 
+    @GetMapping("/get/my/profile")
+    public ResponseEntity getMyProfile(@AuthenticationPrincipal MyUser myUser){
+        return ResponseEntity.status(200).body(participantService.getMyProfile(myUser.getId()));
+    }
+
 
     @GetMapping("/get/my-achievements")
     public ResponseEntity getMyAchievements(@AuthenticationPrincipal MyUser myUser) {
