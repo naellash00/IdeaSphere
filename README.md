@@ -34,7 +34,7 @@ IdeaSphere is a dedicated platform that empowers individuals to showcase their c
 
 ## Use Case Diagram
 
-![Use Case Diagram](./ideaSphereUseCase.drawio.png)
+![Use Case Diagram](https://cdn.discordapp.com/attachments/1321830373256335403/1325860094168141834/ideaSphereUseCase.drawio.png?ex=677d52ef&is=677c016f&hm=fd76973fedeb31fee9e2c6fdd77641e7552308a846778fee67959fc525866900&)
 
 ---
 
