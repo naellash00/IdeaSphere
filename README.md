@@ -25,7 +25,12 @@ IdeaSphere is a dedicated platform that empowers individuals to showcase their c
 - **نظام التصويت**: يوفر طريقة عادلة وواضحة لتحديد الفائزين من خلال تصويت الجمهور أو اختيار المنظم.
 - **الإشعارات**: تبقي المستخدمين على اطلاع بآخر التحديثات والمواعيد النهائية وإعلانات النتائج.
 - **فئات متنوعة**: تدعم مجموعة واسعة من أنواع المسابقات لتلبي مختلف المهارات والاهتمامات.
+  ---
+### Links
 
+- [Figma Design](https://www.figma.com/proto/oUBCUch383eDZlzbEHI1jv/IdeaSphere?node-id=61-497&p=f&t=1zzA4JYAwr813AdI-1&scaling=contain&content-scaling=fixed&page-id=0%3A1)
+- [Presentation](https://www.canva.com/design/DAGbau1CiMA/fg470odHkUVnt0vgD1Unmg/edit)
+- [PostMan API Documentation](https://documenter.getpostman.com/view/39709949/2sAYJAcwWX)
   ---
 
 ## Class Diagram
@@ -34,7 +39,7 @@ IdeaSphere is a dedicated platform that empowers individuals to showcase their c
 
 ## Use Case Diagram
 
-![Use Case Diagram](https://cdn.discordapp.com/attachments/1321830373256335403/1325860094168141834/ideaSphereUseCase.drawio.png?ex=677d52ef&is=677c016f&hm=fd76973fedeb31fee9e2c6fdd77641e7552308a846778fee67959fc525866900&)
+![Use Case Diagram](https://cdn.discordapp.com/attachments/1321830373256335403/1325964561186164766/ideaSphereUseCase.drawio.png?ex=677db43a&is=677c62ba&hm=db0d9c750d1284664d39951e937a190b0a289b3b464040db2fb2f33d58abb08a&)
 
 ---
 
