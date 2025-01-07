@@ -47,8 +47,7 @@ IdeaSphere is a dedicated platform that empowers individuals to showcase their c
 
 ## My Work on the Project
 
-My work: **Category**, **Competition**, **Participant**, **Submission**, and **Vote** models, including their respective CRUD operations and models. Additionally, I have implemented the following **extra functionalities** and endpoints:
-
+My work: **Category**, **Competition**, **Participant**, **Submission**, and **Vote** models, including their respective CRUD operations and models. 
 ### Extra Endpoints
 
 1. **POST** `/register` - Register a new participant. *(ParticipantController)*
@@ -82,6 +81,40 @@ My work: **Category**, **Competition**, **Participant**, **Submission**, and **V
 3. **ParticipantController**
 4. **SubmissionController**
 5. **VoteController**
+
+### DTO:
+
+1. **ParticipantInDTO**
+2. **AchievementOutDTO**
+3. **CategoryOutDTO**
+4. **FeedbackOutDTO**
+5. **ParticipantOutDTO**
+6. **SubmissionOutDTO**
+
+### Models:
+
+1. **MyUser**
+2. **Participant**
+3. **Submission**
+4. **Vote**
+
+### Repository:
+
+1. **AuthRepository**
+2. **ParticipantRepository**
+3. **SubmissionRepository**
+4. **VoteRepository**
+5. **ParticipantOutDTO**
+6. **SubmissionOutDTO**
+
+### Service:
+
+1. **AdminService**
+2. **AuthService**
+3. **ParticipantService**
+4. **SubmissionService**
+5. **VoteService**
+6. **WinnerPaymentService**
 
 
 
