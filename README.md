@@ -97,6 +97,7 @@ My work: **Category**, **Competition**, **Participant**, **Submission**, and **V
 2. **Participant**
 3. **Submission**
 4. **Vote**
+5. **WinnerPayment**
 
 ### Repository:
 
