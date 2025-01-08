@@ -53,19 +53,19 @@ My work: **Category**, **Competition**, **Participant**, **Submission**, and **V
 1. **POST** `/register` - Register a new participant. *(ParticipantController)*
 2. **POST** `/submit/{competition_id}` - Submit an entry for a competition. *(SubmissionController)*
 3. **PUT** `/vote/{submission_id}` - Cast a vote on a submission. *(VoteController)*
-4. **GET** `/get/my-submissions` - Retrieve all submissions of the authenticated user. *(SubmissionController)*
-5. **PUT** `/add/category/to/participant/{category_id}` - Add a category to the authenticated participant's profile. *(CategoryController)*
-6. **GET** `/get/my-achievements` - Retrieve achievements of the authenticated participant. *(ParticipantController)*
+4. **GET** `/get/my-submissions` - Retrieve all submissions of the participant. *(SubmissionController)*
+5. **PUT** `/add/category/to/participant/{category_id}` - Add a category to the participant's profile. *(CategoryController)*
+6. **GET** `/get/my-achievements` - Retrieve achievements of the participant. *(ParticipantController)*
 7. **PUT** `/company/select/winner/{competition_id}/{submission_id}` - Select a winner for a competition as a company. *(SubmissionController)*
 8. **PUT** `/individual/select/winner/{competition_id}/{submission_id}` - Select a winner for a competition as an individual. *(SubmissionController)*
-9. **GET** `/get/recommend/competitions` - Get competition recommendations for the authenticated user. *(CompetitionController)*
+9. **GET** `/get/recommend/competitions` - Get competition recommendations for the participants based on their categories. *(CompetitionController)*
 10. **POST** `/request-feedback/{submission_id}` - Request feedback for a submission. *(SubmissionController)*
 11. **PUT** `/company/accept/feedback/request/{submission_id}` - Accept a feedback request as a company. *(SubmissionController)*
 12. **PUT** `/company/reject/feedback/request/{submission_id}` - Reject a feedback request as a company. *(SubmissionController)*
 13. **PUT** `/individual/accept/feedback/request/{submission_id}` - Accept a feedback request as an individual. *(SubmissionController)*
 14. **PUT** `/individual/reject/feedback/request/{submission_id}` - Reject a feedback request as an individual. *(SubmissionController)*
 15. **PUT** `/add-review/{competition_id}` - Add a review to a competition. *(CompetitionController)*
-16. **GET** `/get/my-feedbacks` - Retrieve feedbacks for the authenticated participant. *(ParticipantController)*
+16. **GET** `/get/my-feedbacks` - Retrieve feedbacks for the participant. *(ParticipantController)*
 17. **GET** `/company/get/my-competition/reviews/{competition_id}` - Retrieve reviews for a company's competition. *(CompetitionController)*
 18. **GET** `/individual/get/my-competition/reviews/{competition_id}` - Retrieve reviews for an individual's competition. *(CompetitionController)*
 19. **POST** `/send-complain` - Send a complaint or inquiry. *(ParticipantController)*
@@ -76,11 +76,10 @@ My work: **Category**, **Competition**, **Participant**, **Submission**, and **V
 
 ### Controllers:
 
-1. **CategoryController**
-2. **CompetitionController**
-3. **ParticipantController**
-4. **SubmissionController**
-5. **VoteController**
+1. **CompetitionController**
+2. **ParticipantController**
+3. **SubmissionController**
+4. **VoteController**
 
 ### DTO:
 
