@@ -47,7 +47,7 @@ IdeaSphere is a dedicated platform that empowers individuals to showcase their c
 
 ## My Work on the Project
 
-My work: **Category**, **Competition**, **Participant**, **Submission**, and **Vote** models, including their respective CRUD operations and models. 
+My work: **Category**, **Competition**, **Participant**, **Submission**, and **Vote** models, including their respective CRUD operations. 
 ### Extra Endpoints
 
 1. **POST** `/register` - Register a new participant. *(ParticipantController)*
