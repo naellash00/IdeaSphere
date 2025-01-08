@@ -25,14 +25,14 @@ IdeaSphere is a dedicated platform that empowers individuals to showcase their c
 - **نظام التصويت**: يوفر طريقة عادلة وواضحة لتحديد الفائزين من خلال تصويت الجمهور أو اختيار المنظم.
 - **الإشعارات**: تبقي المستخدمين على اطلاع بآخر التحديثات والمواعيد النهائية وإعلانات النتائج.
 - **فئات متنوعة**: تدعم مجموعة واسعة من أنواع المسابقات لتلبي مختلف المهارات والاهتمامات.
-- 
+ 
   ---
 ### Links
 
 - [Figma Design](https://www.figma.com/proto/oUBCUch383eDZlzbEHI1jv/IdeaSphere?node-id=61-497&p=f&t=1zzA4JYAwr813AdI-1&scaling=contain&content-scaling=fixed&page-id=0%3A1)
 - [Presentation](https://www.canva.com/design/DAGbau1CiMA/fg470odHkUVnt0vgD1Unmg/edit)
 - [PostMan API Documentation](https://documenter.getpostman.com/view/39709949/2sAYJAcwWX)
-- 
+ 
   ---
 
 ## Class Diagram
