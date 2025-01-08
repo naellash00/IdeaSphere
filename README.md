@@ -104,8 +104,7 @@ My work: **Category**, **Competition**, **Participant**, **Submission**, and **V
 2. **ParticipantRepository**
 3. **SubmissionRepository**
 4. **VoteRepository**
-5. **ParticipantOutDTO**
-6. **SubmissionOutDTO**
+5. **WinnerPaymentRepository**
 
 ### Service:
 
